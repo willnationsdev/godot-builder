@@ -15,7 +15,7 @@ config/icon="res://icon.png"
 
 [editor_plugins]
 
-enabled=PoolStringArray( "godot-cpp-builder" )
+enabled=PoolStringArray( "godot-builder" )
 
 [rendering]
 
