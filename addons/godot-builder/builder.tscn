@@ -1,60 +1,27 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=4 format=2]
 
-[ext_resource path="res://addons/godot-builder/wrapper.gd" type="Script" id=1]
-[ext_resource path="res://addons/godot-builder/toolbar.gd" type="Script" id=2]
-[ext_resource path="res://addons/godot-builder/icons/icon_plug.svg" type="Texture" id=3]
-[ext_resource path="res://addons/godot-builder/icons/icon_wrench.svg" type="Texture" id=4]
-[ext_resource path="res://addons/godot-builder/icons/icon_tools.svg" type="Texture" id=5]
+[ext_resource path="res://addons/godot-builder/toolbar.gd" type="Script" id=1]
+[ext_resource path="res://addons/godot-builder/icons/icon_plug.svg" type="Texture" id=2]
+[ext_resource path="res://addons/godot-builder/icons/icon_wrench.svg" type="Texture" id=3]
 
-[node name="ToolbarWrapper" type="HBoxContainer" index="0"]
-
+[node name="Toolbar" type="HBoxContainer" index="0"]
 anchor_left = 0.0
 anchor_top = 0.0
-anchor_right = 0.0
+anchor_right = 1.0
 anchor_bottom = 0.0
-margin_top = -1.0
-margin_right = 632.0
-margin_bottom = 23.0
+margin_bottom = 24.0
 rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
 mouse_filter = 1
+mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 1
 alignment = 0
 script = ExtResource( 1 )
 _sections_unfolded = [ "Percent", "Rect" ]
 
-[node name="VSeparator" type="VSeparator" parent="." index="0"]
-
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
-margin_right = 4.0
-margin_bottom = 24.0
-rect_pivot_offset = Vector2( 0, 0 )
-mouse_filter = 0
-size_flags_horizontal = 1
-size_flags_vertical = 1
-
-[node name="Toolbar" type="HBoxContainer" parent="." index="1"]
-
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
-margin_left = 8.0
-margin_right = 600.0
-margin_bottom = 24.0
-rect_pivot_offset = Vector2( 0, 0 )
-mouse_filter = 1
-size_flags_horizontal = 1
-size_flags_vertical = 1
-alignment = 0
-script = ExtResource( 2 )
-_sections_unfolded = [ "Anchor", "Rect", "Visibility" ]
-
-[node name="Options" type="HBoxContainer" parent="Toolbar" index="0"]
-
+[node name="Options" type="HBoxContainer" parent="." index="0"]
+editor/display_folded = true
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
@@ -62,13 +29,14 @@ anchor_bottom = 0.0
 margin_right = 516.0
 margin_bottom = 24.0
 rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
 mouse_filter = 1
+mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 1
 alignment = 0
 
-[node name="LanguageOption" type="OptionButton" parent="Toolbar/Options" index="0"]
-
+[node name="LanguageOption" type="OptionButton" parent="Options" index="0"]
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
@@ -77,7 +45,10 @@ margin_right = 100.0
 margin_bottom = 24.0
 rect_min_size = Vector2( 100, 0 )
 rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+focus_mode = 2
 mouse_filter = 0
+mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 1
 toggle_mode = false
@@ -88,12 +59,11 @@ group = null
 text = "C++"
 flat = false
 align = 0
+items = [ "C++", null, false, -1, null, "C++", null, false, -1, null ]
 selected = 0
-items = [ "C++", null, false, -1, null ]
 _sections_unfolded = [ "Rect" ]
 
-[node name="DynamicOptions" type="HBoxContainer" parent="Toolbar/Options" index="1"]
-
+[node name="DynamicOptions" type="HBoxContainer" parent="Options" index="1"]
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
@@ -102,13 +72,14 @@ margin_left = 104.0
 margin_right = 516.0
 margin_bottom = 24.0
 rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
 mouse_filter = 1
+mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 1
 alignment = 0
 
-[node name="VersionOption" type="OptionButton" parent="Toolbar/Options/DynamicOptions" index="0"]
-
+[node name="VersionOption" type="OptionButton" parent="Options/DynamicOptions" index="0"]
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
@@ -117,7 +88,10 @@ margin_right = 100.0
 margin_bottom = 24.0
 rect_min_size = Vector2( 100, 0 )
 rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+focus_mode = 2
 mouse_filter = 0
+mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 1
 toggle_mode = false
@@ -125,15 +99,14 @@ action_mode = 0
 enabled_focus_mode = 2
 shortcut = null
 group = null
-text = "1.1"
+text = "1.0"
 flat = false
 align = 0
-selected = 1
-items = [ "1.0", null, false, -1, null, "1.1", null, false, -1, null ]
+items = [ "1.0", null, false, -1, null, "1.1", null, false, -1, null, "Custom", null, false, -1, null ]
+selected = 0
 _sections_unfolded = [ "Rect" ]
 
-[node name="PlatformOption" type="OptionButton" parent="Toolbar/Options/DynamicOptions" index="1"]
-
+[node name="PlatformOption" type="OptionButton" parent="Options/DynamicOptions" index="1"]
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
@@ -143,7 +116,10 @@ margin_right = 204.0
 margin_bottom = 24.0
 rect_min_size = Vector2( 100, 0 )
 rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+focus_mode = 2
 mouse_filter = 0
+mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 1
 toggle_mode = false
@@ -151,15 +127,14 @@ action_mode = 0
 enabled_focus_mode = 2
 shortcut = null
 group = null
-text = "Windows"
+text = "OSX"
 flat = false
 align = 0
+items = [ "OSX", null, false, -1, null, "Windows", null, false, -1, null, "X11", null, false, -1, null ]
 selected = 0
-items = [ "Windows", null, false, -1, null, "OSX", null, false, -1, null, "X11", null, false, -1, null ]
 _sections_unfolded = [ "Rect" ]
 
-[node name="BitsOption" type="OptionButton" parent="Toolbar/Options/DynamicOptions" index="2"]
-
+[node name="BitsOption" type="OptionButton" parent="Options/DynamicOptions" index="2"]
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
@@ -169,7 +144,10 @@ margin_right = 308.0
 margin_bottom = 24.0
 rect_min_size = Vector2( 100, 0 )
 rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+focus_mode = 2
 mouse_filter = 0
+mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 1
 toggle_mode = false
@@ -177,15 +155,14 @@ action_mode = 0
 enabled_focus_mode = 2
 shortcut = null
 group = null
-text = "32"
+text = "64"
 flat = false
 align = 0
-selected = 1
 items = [ "64", null, false, -1, null, "32", null, false, -1, null ]
+selected = 0
 _sections_unfolded = [ "Rect" ]
 
-[node name="TargetOption" type="OptionButton" parent="Toolbar/Options/DynamicOptions" index="3"]
-
+[node name="TargetOption" type="OptionButton" parent="Options/DynamicOptions" index="3"]
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
@@ -195,7 +172,10 @@ margin_right = 412.0
 margin_bottom = 24.0
 rect_min_size = Vector2( 100, 0 )
 rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+focus_mode = 2
 mouse_filter = 0
+mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 1
 toggle_mode = false
@@ -206,12 +186,12 @@ group = null
 text = "debug"
 flat = false
 align = 0
-selected = 0
 items = [ "debug", null, false, -1, null, "release", null, false, -1, null ]
+selected = 0
 _sections_unfolded = [ "Rect" ]
 
-[node name="Controls" type="HBoxContainer" parent="Toolbar" index="1"]
-
+[node name="Controls" type="HBoxContainer" parent="." index="1"]
+editor/display_folded = true
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
@@ -220,13 +200,14 @@ margin_left = 520.0
 margin_right = 580.0
 margin_bottom = 24.0
 rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
 mouse_filter = 1
+mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 1
 alignment = 0
 
-[node name="BindingsButton" type="ToolButton" parent="Toolbar/Controls" index="0"]
-
+[node name="BindingsButton" type="ToolButton" parent="Controls" index="0"]
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
@@ -234,7 +215,33 @@ anchor_bottom = 0.0
 margin_right = 28.0
 margin_bottom = 24.0
 rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+focus_mode = 2
 mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+toggle_mode = false
+enabled_focus_mode = 2
+shortcut = null
+group = null
+icon = ExtResource( 2 )
+flat = true
+align = 1
+
+[node name="BuildButton" type="ToolButton" parent="Controls" index="1"]
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 32.0
+margin_right = 60.0
+margin_bottom = 24.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+focus_mode = 2
+mouse_filter = 0
+mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 1
 toggle_mode = false
@@ -244,48 +251,20 @@ group = null
 icon = ExtResource( 3 )
 flat = true
 align = 1
-
-[node name="BuildButton" type="ToolButton" parent="Toolbar/Controls" index="1"]
-
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
-margin_left = 32.0
-margin_right = 60.0
-margin_bottom = 24.0
-rect_pivot_offset = Vector2( 0, 0 )
-mouse_filter = 0
-size_flags_horizontal = 1
-size_flags_vertical = 1
-toggle_mode = false
-enabled_focus_mode = 2
-shortcut = null
-group = null
-icon = ExtResource( 4 )
-flat = true
-align = 1
 _sections_unfolded = [ "Rect" ]
 
-[node name="ToggleButton" type="ToolButton" parent="." index="2"]
-
+[node name="VSeparator" type="VSeparator" parent="." index="2"]
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_left = 604.0
-margin_right = 632.0
+margin_left = 584.0
+margin_right = 588.0
 margin_bottom = 24.0
 rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
 mouse_filter = 0
+mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 1
-toggle_mode = true
-enabled_focus_mode = 2
-shortcut = null
-group = null
-icon = ExtResource( 5 )
-flat = true
-align = 1
-
 

@@ -14,11 +14,6 @@ onready var platform_option = $Options/DynamicOptions/PlatformOption
 onready var bits_option = $Options/DynamicOptions/BitsOption
 onready var target_option = $Options/DynamicOptions/TargetOption
 
-#onready var found_check = $FoundCheck
-#onready var found_button = $FoundButton
-#onready var compiled_check = $CompiledCheck
-#onready var compiled_button = $CompiledButton
-
 func _ready():
 	if config.load(CONFIG_PATH) != OK:
 		print("Failed to load Godot Builder config file at \"", CONFIG_PATH, "\".")
