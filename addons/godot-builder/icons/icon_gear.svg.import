@@ -7,10 +7,7 @@ path="res://.import/icon_gear.svg-6f64d9a9349ed0e0977aadc611941d38.stex"
 [deps]
 
 source_file="res://addons/godot-builder/icons/icon_gear.svg"
-source_md5="2c49c308750c2301ddde3ee2f7f9e553"
-
 dest_files=[ "res://.import/icon_gear.svg-6f64d9a9349ed0e0977aadc611941d38.stex" ]
-dest_md5="c2ee1a61ec3c081851c82366bd8ad69b"
 
 [params]
 

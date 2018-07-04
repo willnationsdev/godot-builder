@@ -2,12 +2,12 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/icon.png-487276ed1e3a0c39cad0279d744ee560.stex"
+path="res://.import/icon_clear.svg-a082f69a9bb2ade03197b532c8d5e30c.stex"
 
 [deps]
 
-source_file="res://icon.png"
-dest_files=[ "res://.import/icon.png-487276ed1e3a0c39cad0279d744ee560.stex" ]
+source_file="res://addons/godot-builder/icons/icon_clear.svg"
+dest_files=[ "res://.import/icon_clear.svg-a082f69a9bb2ade03197b532c8d5e30c.stex" ]
 
 [params]
 

@@ -4,6 +4,12 @@ extends HBoxContainer
 const CONFIG_PATH = "res://addons/godot-builder/builder.cfg"
 const SELECTIONS_PATH = "res://addons/godot-builder/selections.cfg"
 
+const GEN_ICON = preload("res://addons/godot-builder/icons/icon_plug.svg")
+const BUILD_ICON = preload("res://addons/godot-builder/icons/icon_wrench.svg")
+const CLEAN_ICON = preload("res://addons/godot-builder/icons/icon_clear.svg")
+
+const ADD_NEW_PLUGIN = 9827315
+
 var config = ConfigFile.new()
 var selections = ConfigFile.new()
 
@@ -13,6 +19,13 @@ onready var version_option = $Options/DynamicOptions/VersionOption
 onready var platform_option = $Options/DynamicOptions/PlatformOption
 onready var bits_option = $Options/DynamicOptions/BitsOption
 onready var target_option = $Options/DynamicOptions/TargetOption
+onready var command_option = $Options/DynamicOptions/CommandOption
+
+onready var execute_button = $Options/ExecuteButton
+
+onready var plugin_option = $Plugins/PluginOption
+
+onready var plugin_dialog = $Plugins/AddGDNativePluginDialog
 
 func _ready():
 	if config.load(CONFIG_PATH) != OK:
@@ -39,8 +52,6 @@ func _ready():
 	
 	_update_items()
 	_update_selections()
-	
-	visible = config.get_value("builder", "expanded", true)
 	
 #	var dir = Directory.new()
 #	var version = version_option.get_item_text(version_option.selected)
@@ -109,6 +120,7 @@ func _update_items():
 	_reload_option_subitems(lang, platform_option, "platforms")
 	_reload_option_subitems(lang, bits_option, "bits")
 	_reload_option_subitems(lang, target_option, "targets")
+	_reload_option_subitems(lang, command_option, "commands")
 	version_option.add_item("Custom")
 
 func _reload_option_subitems(p_lang, p_option, p_config_key):
@@ -140,6 +152,12 @@ func _update_selections():
 	_update_item_selection(lang, platform_option, "platform")
 	_update_item_selection(lang, bits_option, "bits")
 	_update_item_selection(lang, target_option, "target")
+	_update_item_selection(lang, command_option, "command")
+	
+	match command_option.get_item_text(command_option.selected):
+		"generate_bindings": execute_button.icon = GEN_ICON
+		"clean": execute_button.icon = CLEAN_ICON
+		_: execute_button.icon = BUILD_ICON
 
 func _update_item_selection(p_lang, p_option, p_config_key):
 	p_option.selected = selections.get_value(p_lang, p_config_key, 0 if p_option.get_item_count() else -1)
@@ -148,7 +166,27 @@ func _get_option(p_prefix):
 	var opt = get(p_prefix + "_option")
 	return opt.get_item_text(opt.selected)
 
-func toggle_expansion(p_expand):
-	visible = p_expand
-	config.set_value("builder", "expanded", p_expand)
-	config.save(CONFIG_PATH)
+
+func _reload_project_subitems():
+	pass
+
+func _update_project_selections():
+	selections.get_value("plugins", "plugin", 0)
+
+func _on_AddPluginButton_pressed():
+	plugin_dialog.popup_centered()
+
+func _on_FileDialog_dir_selected():
+	$Plugins/FileDialog.get_line_edit().text = $Plugins/Filedialog.current_dir
+
+func _on_FileDialog_confirmed():
+	plugin_dialog.path_edit = $Plugins/FileDialog.current_dir
+
+func _on_AddGDNativePluginDialog_confirmed():
+	var rand = randi()
+	plugin_option.add_item(plugin_dialog.name, rand)
+	plugin_option.get_popup().set_item_tooltip(plugin_dialog.path)
+
+func _on_AddGDNativePluginDialog_request_browse():
+	$Plugins/FileDialog.popup_centered_ratio(.75)
+

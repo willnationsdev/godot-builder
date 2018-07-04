@@ -7,10 +7,7 @@ path="res://.import/icon_plug.svg-f2d0771a90a0b6eeb39beb52b1f839e4.stex"
 [deps]
 
 source_file="res://addons/godot-builder/icons/icon_plug.svg"
-source_md5="ee4c22df6bb467166adc590cf154547f"
-
 dest_files=[ "res://.import/icon_plug.svg-f2d0771a90a0b6eeb39beb52b1f839e4.stex" ]
-dest_md5="3ec37bb929f589ea2b1c7785703e5662"
 
 [params]
 

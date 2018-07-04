@@ -7,10 +7,7 @@ path="res://.import/icon_wrench.svg-f1b8fefcdf9a39e68c5633d4208f463b.stex"
 [deps]
 
 source_file="res://addons/godot-builder/icons/icon_wrench.svg"
-source_md5="bfece160e1a36ed193bc082d449b0b01"
-
 dest_files=[ "res://.import/icon_wrench.svg-f1b8fefcdf9a39e68c5633d4208f463b.stex" ]
-dest_md5="e695dbb0adab5f19c421b799f4893561"
 
 [params]
 
