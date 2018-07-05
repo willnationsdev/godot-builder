@@ -1,11 +1,11 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=4 format=2]
 
-[ext_resource path="res://addons/godot-builder/toolbar.gd" type="Script" id=1]
-[ext_resource path="res://addons/godot-builder/icons/icon_clear.svg" type="Texture" id=2]
-[ext_resource path="res://addons/godot-builder/icons/icon_add.svg" type="Texture" id=3]
-[ext_resource path="res://addons/godot-builder/gdnative_plugin_add_dialog.tscn" type="PackedScene" id=4]
+[ext_resource path="res://addons/godot-builder/builder.gd" type="Script" id=1]
+[ext_resource path="res://addons/godot-builder/toolbar.tscn" type="PackedScene" id=2]
+[ext_resource path="res://addons/godot-builder/plugins_editor.tscn" type="PackedScene" id=3]
 
-[node name="Toolbar" type="HBoxContainer" index="0"]
+
+[node name="Builder" type="VBoxContainer" index="0"]
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 1.0
@@ -21,344 +21,24 @@ alignment = 0
 script = ExtResource( 1 )
 _sections_unfolded = [ "Percent", "Rect" ]
 
-[node name="Options" type="HBoxContainer" parent="." index="0"]
-editor/display_folded = true
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
-margin_right = 702.0
-margin_bottom = 24.0
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
-mouse_filter = 1
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 1
-size_flags_vertical = 1
-alignment = 0
+[node name="BuildToolbar" parent="." index="0" instance=ExtResource( 2 )]
 
-[node name="LanguageOption" type="OptionButton" parent="Options" index="0"]
+[node name="HSeparator" type="HSeparator" parent="." index="1"]
+visible = false
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_right = 100.0
-margin_bottom = 24.0
-rect_min_size = Vector2( 100, 0 )
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
-focus_mode = 2
-mouse_filter = 0
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 1
-size_flags_vertical = 1
-toggle_mode = false
-action_mode = 0
-enabled_focus_mode = 2
-shortcut = null
-group = null
-text = "C++"
-flat = false
-align = 0
-items = [ "C++", null, false, -1, null, "C++", null, false, -1, null, "C++", null, false, -1, null, "C++", null, false, -1, null, "C++", null, false, -1, null, "C++", null, false, -1, null ]
-selected = 0
-_sections_unfolded = [ "Rect" ]
-
-[node name="DynamicOptions" type="HBoxContainer" parent="Options" index="1"]
-editor/display_folded = true
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
-margin_left = 104.0
-margin_right = 670.0
-margin_bottom = 24.0
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
-mouse_filter = 1
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 1
-size_flags_vertical = 1
-alignment = 0
-
-[node name="VersionOption" type="OptionButton" parent="Options/DynamicOptions" index="0"]
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
-margin_right = 100.0
-margin_bottom = 24.0
-rect_min_size = Vector2( 100, 0 )
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
-focus_mode = 2
-mouse_filter = 0
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 1
-size_flags_vertical = 1
-toggle_mode = false
-action_mode = 0
-enabled_focus_mode = 2
-shortcut = null
-group = null
-text = "1.1"
-flat = false
-align = 0
-items = [ "1.0", null, false, -1, null, "1.1", null, false, -1, null, "Custom", null, false, -1, null ]
-selected = 1
-_sections_unfolded = [ "Rect" ]
-
-[node name="PlatformOption" type="OptionButton" parent="Options/DynamicOptions" index="1"]
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
-margin_left = 104.0
-margin_right = 204.0
-margin_bottom = 24.0
-rect_min_size = Vector2( 100, 0 )
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
-focus_mode = 2
-mouse_filter = 0
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 1
-size_flags_vertical = 1
-toggle_mode = false
-action_mode = 0
-enabled_focus_mode = 2
-shortcut = null
-group = null
-text = "Windows"
-flat = false
-align = 0
-items = [ "OSX", null, false, -1, null, "Windows", null, false, -1, null, "X11", null, false, -1, null ]
-selected = 1
-_sections_unfolded = [ "Rect" ]
-
-[node name="BitsOption" type="OptionButton" parent="Options/DynamicOptions" index="2"]
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
-margin_left = 208.0
-margin_right = 308.0
-margin_bottom = 24.0
-rect_min_size = Vector2( 100, 0 )
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
-focus_mode = 2
-mouse_filter = 0
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 1
-size_flags_vertical = 1
-toggle_mode = false
-action_mode = 0
-enabled_focus_mode = 2
-shortcut = null
-group = null
-text = "64"
-flat = false
-align = 0
-items = [ "64", null, false, -1, null, "32", null, false, -1, null ]
-selected = 0
-_sections_unfolded = [ "Rect" ]
-
-[node name="TargetOption" type="OptionButton" parent="Options/DynamicOptions" index="3"]
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
-margin_left = 312.0
-margin_right = 412.0
-margin_bottom = 24.0
-rect_min_size = Vector2( 100, 0 )
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
-focus_mode = 2
-mouse_filter = 0
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 1
-size_flags_vertical = 1
-toggle_mode = false
-action_mode = 0
-enabled_focus_mode = 2
-shortcut = null
-group = null
-text = "debug"
-flat = false
-align = 0
-items = [ "debug", null, false, -1, null, "release", null, false, -1, null ]
-selected = 0
-
-[node name="CommandOption" type="OptionButton" parent="Options/DynamicOptions" index="4"]
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
-margin_left = 416.0
-margin_right = 566.0
-margin_bottom = 24.0
-rect_min_size = Vector2( 150, 0 )
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
-focus_mode = 2
-mouse_filter = 0
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 1
-size_flags_vertical = 1
-toggle_mode = false
-action_mode = 0
-enabled_focus_mode = 2
-shortcut = null
-group = null
-text = "clean"
-flat = false
-align = 0
-items = [ "generate_bindings", null, false, -1, null, "build", null, false, -1, null, "clean", null, false, -1, null ]
-selected = 2
-_sections_unfolded = [ "Rect" ]
-
-[node name="ExecuteButton" type="ToolButton" parent="Options" index="2"]
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
-margin_left = 674.0
-margin_right = 702.0
-margin_bottom = 24.0
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
-focus_mode = 2
-mouse_filter = 0
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 1
-size_flags_vertical = 1
-toggle_mode = false
-enabled_focus_mode = 2
-shortcut = null
-group = null
-icon = ExtResource( 2 )
-flat = true
-align = 1
-
-[node name="VSeparator" type="VSeparator" parent="." index="1"]
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
-margin_left = 706.0
-margin_right = 710.0
-margin_bottom = 24.0
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
-mouse_filter = 0
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 1
-size_flags_vertical = 1
-
-[node name="Plugins" type="HBoxContainer" parent="." index="2"]
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
-margin_left = 714.0
+margin_top = 28.0
 margin_right = 1024.0
-margin_bottom = 24.0
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
-mouse_filter = 1
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 3
-size_flags_vertical = 1
-alignment = 0
-_sections_unfolded = [ "Size Flags" ]
-
-[node name="AddPluginButton" type="ToolButton" parent="Plugins" index="0"]
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
-margin_right = 28.0
-margin_bottom = 24.0
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
-focus_mode = 2
-mouse_filter = 0
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 1
-size_flags_vertical = 1
-toggle_mode = false
-enabled_focus_mode = 2
-shortcut = null
-group = null
-icon = ExtResource( 3 )
-flat = true
-align = 1
-
-[node name="PluginOption" type="OptionButton" parent="Plugins" index="1"]
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
-margin_left = 32.0
-margin_right = 132.0
-margin_bottom = 24.0
-rect_min_size = Vector2( 100, 0 )
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
-focus_mode = 2
-mouse_filter = 0
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 1
-size_flags_vertical = 1
-toggle_mode = false
-action_mode = 0
-enabled_focus_mode = 2
-shortcut = null
-group = null
-flat = false
-align = 0
-items = [  ]
-selected = -1
-
-[node name="FileDialog" type="FileDialog" parent="Plugins" index="2"]
-visible = false
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
-margin_right = 275.0
-margin_bottom = 130.0
-rect_min_size = Vector2( 200, 70 )
+margin_bottom = 32.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 mouse_filter = 0
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 1
-popup_exclusive = false
-window_title = "Open a Directory"
-resizable = true
-dialog_text = "Select a directory containing an init.cpp file."
-dialog_hide_on_ok = true
-mode_overrides_title = true
-mode = 2
-access = 2
-filters = PoolStringArray(  )
-show_hidden_files = true
-current_dir = "D:/Source/GitHub/godot-builder"
-current_file = ""
-current_path = "D:/Source/GitHub/godot-builder/"
-_sections_unfolded = [ "Dialog" ]
 
-[node name="AddGDNativePluginDialog" parent="Plugins" index="3" instance=ExtResource( 4 )]
-visible = false
-margin_left = 104.0
-margin_right = 398.0
+[node name="PluginsEditor" parent="." index="2" instance=ExtResource( 3 )]
 
-[connection signal="pressed" from="Plugins/AddPluginButton" to="." method="_on_AddPluginButton_pressed"]
-[connection signal="confirmed" from="Plugins/FileDialog" to="." method="_on_FileDialog_confirmed"]
-[connection signal="dir_selected" from="Plugins/FileDialog" to="." method="_on_FileDialog_dir_selected"]
-[connection signal="confirmed" from="Plugins/AddGDNativePluginDialog" to="." method="_on_AddGDNativePluginDialog_confirmed"]
-[connection signal="request_browse" from="Plugins/AddGDNativePluginDialog" to="." method="_on_AddGDNativePluginDialog_request_browse"]
+[connection signal="request_toggle_gdnative_plugins" from="BuildToolbar" to="." method="_on_BuildToolbar_request_toggle_gdnative_plugins"]

@@ -1,0 +1,142 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://addons/godot-builder/plugins_editor.gd" type="Script" id=1]
+[ext_resource path="res://addons/godot-builder/icons/icon_add.svg" type="Texture" id=2]
+[ext_resource path="res://addons/godot-builder/gdnative_plugin_add_dialog.tscn" type="PackedScene" id=3]
+
+[node name="PluginsEditor" type="HBoxContainer" index="0"]
+visible = false
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_top = 36.0
+margin_right = 1024.0
+margin_bottom = 264.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 1
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+alignment = 0
+script = ExtResource( 1 )
+_sections_unfolded = [ "Size Flags" ]
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." index="0"]
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_right = 1024.0
+margin_bottom = 228.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 1
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+alignment = 0
+_sections_unfolded = [ "Size Flags" ]
+
+[node name="PluginToolbar" type="HBoxContainer" parent="VBoxContainer" index="0"]
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_right = 1024.0
+margin_bottom = 24.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 1
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+alignment = 0
+
+[node name="AddPluginButton" type="ToolButton" parent="VBoxContainer/PluginToolbar" index="0"]
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_right = 28.0
+margin_bottom = 24.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+focus_mode = 2
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+toggle_mode = false
+enabled_focus_mode = 2
+shortcut = null
+group = null
+icon = ExtResource( 2 )
+flat = true
+align = 1
+
+[node name="PluginsTree" type="Tree" parent="VBoxContainer" index="1"]
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_top = 28.0
+margin_right = 1024.0
+margin_bottom = 228.0
+rect_min_size = Vector2( 200, 200 )
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+focus_mode = 2
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+columns = 1
+allow_reselect = false
+allow_rmb_select = false
+hide_folding = false
+hide_root = true
+drop_mode_flags = 0
+select_mode = 2
+_sections_unfolded = [ "Rect", "Size Flags" ]
+
+[node name="FileDialog" type="FileDialog" parent="." index="1"]
+visible = false
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_right = 275.0
+margin_bottom = 130.0
+rect_min_size = Vector2( 200, 70 )
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+popup_exclusive = false
+window_title = "Open a Directory"
+resizable = true
+dialog_text = "Select a directory containing an init.cpp file."
+dialog_hide_on_ok = true
+mode_overrides_title = true
+mode = 2
+access = 2
+filters = PoolStringArray(  )
+show_hidden_files = true
+current_dir = "C:/Users/Will_Nations/Documents/GitHub/godot-builder"
+current_file = ""
+current_path = "C:/Users/Will_Nations/Documents/GitHub/godot-builder/"
+_sections_unfolded = [ "Dialog", "Theme" ]
+
+[node name="AddGDNativePluginDialog" parent="." index="2" instance=ExtResource( 3 )]
+visible = false
+margin_left = 104.0
+margin_right = 398.0
+
+[connection signal="pressed" from="VBoxContainer/PluginToolbar/AddPluginButton" to="." method="_on_AddPluginButton_pressed"]
+[connection signal="dir_selected" from="FileDialog" to="." method="_on_FileDialog_dir_selected"]
+[connection signal="confirmed" from="AddGDNativePluginDialog" to="." method="_on_AddGDNativePluginDialog_confirmed"]
+[connection signal="request_browse" from="AddGDNativePluginDialog" to="." method="_on_AddGDNativePluginDialog_request_browse"]

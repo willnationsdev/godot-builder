@@ -1,0 +1,378 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://addons/godot-builder/toolbar.gd" type="Script" id=1]
+[ext_resource path="res://addons/godot-builder/icons/icon_plug.svg" type="Texture" id=2]
+[ext_resource path="res://addons/godot-builder/icons/icon_wrench.svg" type="Texture" id=3]
+[ext_resource path="res://addons/godot-builder/icons/icon_clear.svg" type="Texture" id=4]
+[ext_resource path="res://addons/godot-builder/icons/icon_arrow_right.svg" type="Texture" id=5]
+
+[node name="Toolbar" type="HBoxContainer" index="0"]
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_right = 1024.0
+margin_bottom = 24.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 1
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+alignment = 0
+script = ExtResource( 1 )
+
+[node name="Options" type="HBoxContainer" parent="." index="0"]
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_right = 612.0
+margin_bottom = 24.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 1
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+alignment = 0
+
+[node name="LanguageOption" type="OptionButton" parent="Options" index="0"]
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_right = 100.0
+margin_bottom = 24.0
+rect_min_size = Vector2( 100, 0 )
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+focus_mode = 2
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+toggle_mode = false
+action_mode = 0
+enabled_focus_mode = 2
+shortcut = null
+group = null
+text = "C++"
+flat = false
+align = 0
+items = [ "C++", null, false, -1, null, "C++", null, false, -1, null, "C++", null, false, -1, null, "C++", null, false, -1, null, "C++", null, false, -1, null, "C++", null, false, -1, null, "C++", null, false, -1, null, "C++", null, false, -1, null ]
+selected = 0
+_sections_unfolded = [ "Rect" ]
+
+[node name="DynamicOptions" type="HBoxContainer" parent="Options" index="1"]
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 104.0
+margin_right = 516.0
+margin_bottom = 24.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 1
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+alignment = 0
+
+[node name="VersionOption" type="OptionButton" parent="Options/DynamicOptions" index="0"]
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_right = 100.0
+margin_bottom = 24.0
+rect_min_size = Vector2( 100, 0 )
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+focus_mode = 2
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+toggle_mode = false
+action_mode = 0
+enabled_focus_mode = 2
+shortcut = null
+group = null
+text = "1.1"
+flat = false
+align = 0
+items = [ "1.0", null, false, -1, null, "1.1", null, false, -1, null, "Custom", null, false, -1, null ]
+selected = 1
+_sections_unfolded = [ "Rect" ]
+
+[node name="PlatformOption" type="OptionButton" parent="Options/DynamicOptions" index="1"]
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 104.0
+margin_right = 204.0
+margin_bottom = 24.0
+rect_min_size = Vector2( 100, 0 )
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+focus_mode = 2
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+toggle_mode = false
+action_mode = 0
+enabled_focus_mode = 2
+shortcut = null
+group = null
+text = "Windows"
+flat = false
+align = 0
+items = [ "OSX", null, false, -1, null, "Windows", null, false, -1, null, "X11", null, false, -1, null ]
+selected = 1
+_sections_unfolded = [ "Rect" ]
+
+[node name="BitsOption" type="OptionButton" parent="Options/DynamicOptions" index="2"]
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 208.0
+margin_right = 308.0
+margin_bottom = 24.0
+rect_min_size = Vector2( 100, 0 )
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+focus_mode = 2
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+toggle_mode = false
+action_mode = 0
+enabled_focus_mode = 2
+shortcut = null
+group = null
+text = "64"
+flat = false
+align = 0
+items = [ "64", null, false, -1, null, "32", null, false, -1, null ]
+selected = 0
+_sections_unfolded = [ "Rect" ]
+
+[node name="TargetOption" type="OptionButton" parent="Options/DynamicOptions" index="3"]
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 312.0
+margin_right = 412.0
+margin_bottom = 24.0
+rect_min_size = Vector2( 100, 0 )
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+focus_mode = 2
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+toggle_mode = false
+action_mode = 0
+enabled_focus_mode = 2
+shortcut = null
+group = null
+text = "debug"
+flat = false
+align = 0
+items = [ "debug", null, false, -1, null, "release", null, false, -1, null ]
+selected = 0
+
+[node name="BindingsButton" type="ToolButton" parent="Options" index="2"]
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 520.0
+margin_right = 548.0
+margin_bottom = 24.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+hint_tooltip = "Generate bindings for the given language's GDNative API version
+and build the bindings library for use in GDNative plugins.
+You should only need to do this once for each language and version."
+focus_mode = 2
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+toggle_mode = false
+enabled_focus_mode = 2
+shortcut = null
+group = null
+icon = ExtResource( 2 )
+flat = true
+align = 1
+_sections_unfolded = [ "Hint" ]
+
+[node name="BuildButton" type="ToolButton" parent="Options" index="3"]
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 552.0
+margin_right = 580.0
+margin_bottom = 24.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+hint_tooltip = "Build a dynamic library using the GDNative bindings library.
+The dynamic library will automatically save to your project folder."
+focus_mode = 2
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+toggle_mode = false
+enabled_focus_mode = 2
+shortcut = null
+group = null
+icon = ExtResource( 3 )
+flat = true
+align = 1
+_sections_unfolded = [ "Hint" ]
+
+[node name="CleanButton" type="ToolButton" parent="Options" index="4"]
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 584.0
+margin_right = 612.0
+margin_bottom = 24.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+focus_mode = 2
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+toggle_mode = false
+enabled_focus_mode = 2
+shortcut = null
+group = null
+icon = ExtResource( 4 )
+flat = true
+align = 1
+
+[node name="PluginSettings" type="HBoxContainer" parent="." index="1"]
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 616.0
+margin_right = 1024.0
+margin_bottom = 24.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 1
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 3
+size_flags_vertical = 1
+alignment = 0
+_sections_unfolded = [ "Size Flags" ]
+
+[node name="GDNativePluginsToggleButton" type="Button" parent="PluginSettings" index="0"]
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_right = 123.0
+margin_bottom = 24.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+focus_mode = 2
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+toggle_mode = true
+enabled_focus_mode = 2
+shortcut = null
+group = null
+text = "GDNative Plugins"
+flat = false
+align = 1
+
+[node name="ToolButton" type="ToolButton" parent="PluginSettings" index="1"]
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 127.0
+margin_right = 155.0
+margin_bottom = 24.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+focus_mode = 2
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+toggle_mode = false
+enabled_focus_mode = 2
+shortcut = null
+group = null
+icon = ExtResource( 5 )
+flat = true
+align = 1
+
+[node name="Label" type="Label" parent="PluginSettings" index="2"]
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 159.0
+margin_top = 5.0
+margin_right = 408.0
+margin_bottom = 19.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 2
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 3
+size_flags_vertical = 4
+text = "None"
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+_sections_unfolded = [ "Size Flags" ]
+
+[node name="CleanupConfirmationDialog" type="ConfirmationDialog" parent="." index="2"]
+visible = false
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_right = 200.0
+margin_bottom = 70.0
+rect_min_size = Vector2( 200, 70 )
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+popup_exclusive = false
+window_title = "Cleanup Confirmation"
+resizable = false
+dialog_text = "Are you sure you want to clean your selected GDNative plugins? This will delete the libraries!"
+dialog_hide_on_ok = true
+_sections_unfolded = [ "Dialog" ]
+
+[connection signal="pressed" from="Options/BindingsButton" to="." method="_on_execute" binds= [ "\"generate_bindings\"" ]]
+[connection signal="pressed" from="Options/BuildButton" to="." method="_on_execute" binds= [ "build" ]]
+[connection signal="pressed" from="Options/CleanButton" to="." method="_on_CleanButton_pressed"]
+[connection signal="toggled" from="PluginSettings/GDNativePluginsToggleButton" to="." method="_on_GDNativePluginsToggleButton_toggled"]
+[connection signal="confirmed" from="CleanupConfirmationDialog" to="." method="_on_execute" binds= [ "clean" ]]

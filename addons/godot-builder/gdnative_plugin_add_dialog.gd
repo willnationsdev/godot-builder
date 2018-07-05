@@ -1,11 +1,10 @@
 tool
 extends ConfirmationDialog
 
-onready var name_edit = $GridContainer/LineEdit
-onready var path_edit = $GridContainer/LineEdit2
+onready var name_edit = $GridContainer/NameEdit
+onready var path_edit = $GridContainer/PathEdit
 
 signal request_browse
 
-func _on_ToolButton_pressed():
-	print("HI")
-	emit_signal("request_browse")
+func _on_BrowseButton_pressed():
+		emit_signal("request_browse")
