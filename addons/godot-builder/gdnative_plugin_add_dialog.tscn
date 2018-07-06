@@ -24,15 +24,28 @@ dialog_hide_on_ok = true
 script = ExtResource( 1 )
 _sections_unfolded = [ "Dialog" ]
 
-[node name="GridContainer" type="GridContainer" parent="." index="3"]
+[node name="VBoxContainer" type="VBoxContainer" parent="." index="3"]
 anchor_left = 0.0
 anchor_top = 0.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-margin_left = 8.0
-margin_top = 8.0
-margin_right = -8.0
-margin_bottom = -36.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_right = 40.0
+margin_bottom = 40.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 1
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+alignment = 0
+
+[node name="GridContainer" type="GridContainer" parent="VBoxContainer" index="0"]
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_right = 278.0
+margin_bottom = 52.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 mouse_filter = 1
@@ -42,7 +55,7 @@ size_flags_vertical = 3
 columns = 3
 _sections_unfolded = [ "Size Flags" ]
 
-[node name="NameLabel" type="Label" parent="GridContainer" index="0"]
+[node name="NameLabel" type="Label" parent="VBoxContainer/GridContainer" index="0"]
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
@@ -61,7 +74,7 @@ percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
 
-[node name="NameEdit" type="LineEdit" parent="GridContainer" index="1"]
+[node name="NameEdit" type="LineEdit" parent="VBoxContainer/GridContainer" index="1"]
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
@@ -85,7 +98,7 @@ caret_blink_speed = 0.65
 caret_position = 0
 _sections_unfolded = [ "Size Flags" ]
 
-[node name="Control" type="Control" parent="GridContainer" index="2"]
+[node name="Control" type="Control" parent="VBoxContainer/GridContainer" index="2"]
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
@@ -100,7 +113,7 @@ mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 1
 
-[node name="PathLabel" type="Label" parent="GridContainer" index="3"]
+[node name="PathLabel" type="Label" parent="VBoxContainer/GridContainer" index="3"]
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
@@ -119,7 +132,7 @@ percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
 
-[node name="PathEdit" type="LineEdit" parent="GridContainer" index="4"]
+[node name="PathEdit" type="LineEdit" parent="VBoxContainer/GridContainer" index="4"]
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
@@ -145,7 +158,7 @@ caret_blink_speed = 0.65
 caret_position = 0
 _sections_unfolded = [ "Rect" ]
 
-[node name="BrowseButton" type="ToolButton" parent="GridContainer" index="5"]
+[node name="BrowseButton" type="ToolButton" parent="VBoxContainer/GridContainer" index="5"]
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
@@ -169,4 +182,4 @@ icon = ExtResource( 2 )
 flat = true
 align = 1
 
-[connection signal="pressed" from="GridContainer/BrowseButton" to="." method="_on_BrowseButton_pressed"]
+[connection signal="pressed" from="VBoxContainer/GridContainer/BrowseButton" to="." method="_on_BrowseButton_pressed"]

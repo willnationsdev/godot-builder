@@ -8,6 +8,7 @@ var builder_button
 
 func _enter_tree():
 	builder = BuilderScn.instance()
+	builder.undoredo = get_undo_redo()
 	builder_button = add_control_to_bottom_panel(builder, "Builder")
 
 func _exit_tree():

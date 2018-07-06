@@ -22,10 +22,17 @@ onready var platform_option = $Options/DynamicOptions/PlatformOption
 onready var bits_option = $Options/DynamicOptions/BitsOption
 onready var target_option = $Options/DynamicOptions/TargetOption
 
+onready var toggle_editor_button = $PluginSettings/GDNativePluginsToggleButton
+
+var undoredo = null
+
 func _ready():
 	if config.load(CONFIG_PATH) != OK:
 		print("Failed to load Godot Builder config file at \"", CONFIG_PATH, "\".")
 		return
+	
+	toggle_editor_button.pressed = config.get_value("editor", "expanded", false)
+	$PluginSettings/Label.text = config.get_value("editor", "selected_project", "None")
 	
 	var languages = config.get_value("builder", "languages", [])
 	if not len(languages):
@@ -156,13 +163,40 @@ func _get_option(p_prefix):
 
 func _on_execute(p_command):
 	match p_command:
-		"generate_bindings": ""
-		"clean": ""
-		"build": ""
-		_: ""
+		"generate_bindings": pass
+		"clean": pass
+		"build": pass
+		_: pass
 
 func _on_CleanButton_pressed():
 	$CleanupConfirmationDialog.popup_centered()
 
 func _on_GDNativePluginsToggleButton_toggled(p_pressed):
+	if config:
+		config.load(CONFIG_PATH)
+		config.set_value("editor", "expanded", p_pressed)
+		config.save(CONFIG_PATH)
+	else:
+		print("CONFIG IS EMPTY")
 	emit_signal("request_toggle_gdnative_plugins", p_pressed)
+
+func _on_PluginsEditor_plugin_selected(p_item):
+	var plugin_name = _get_item_plugin_label_text(p_item)
+	config.set_value("editor", "selected_project", plugin_name)
+	config.save(CONFIG_PATH)
+	$PluginSettings/Label.text = plugin_name
+
+func _get_item_plugin_label_text(p_item):
+	return "None" if not p_item or not p_item.get_metadata(0) or not p_item.get_metadata(0).has("name") else p_item.get_metadata(0).name
+
+func _on_PluginsEditor_plugins_tree_reloaded(p_tree):
+	var root = p_tree.get_root()
+	var an_item = root.get_children()
+	while an_item:
+		var item_name = _get_item_plugin_label_text(an_item)
+		if $PluginSettings/Label.text == item_name:
+			_on_PluginsEditor_plugin_selected(an_item)
+			break
+		an_item = an_item.get_next()
+	if not an_item:
+		_on_PluginsEditor_plugin_selected(null)

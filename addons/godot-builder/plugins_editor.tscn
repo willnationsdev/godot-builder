@@ -1,11 +1,10 @@
 [gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://addons/godot-builder/plugins_editor.gd" type="Script" id=1]
-[ext_resource path="res://addons/godot-builder/icons/icon_add.svg" type="Texture" id=2]
+[ext_resource path="res://addons/godot-builder/icons/icon_class_list.svg" type="Texture" id=2]
 [ext_resource path="res://addons/godot-builder/gdnative_plugin_add_dialog.tscn" type="PackedScene" id=3]
 
 [node name="PluginsEditor" type="HBoxContainer" index="0"]
-visible = false
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
@@ -29,6 +28,53 @@ anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
 margin_right = 1024.0
+margin_bottom = 236.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 1
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+alignment = 0
+_sections_unfolded = [ "Size Flags" ]
+
+[node name="HSeparator" type="HSeparator" parent="VBoxContainer" index="0"]
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_right = 1024.0
+margin_bottom = 4.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer" index="1"]
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_top = 8.0
+margin_right = 1024.0
+margin_bottom = 236.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 1
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+alignment = 0
+_sections_unfolded = [ "Size Flags" ]
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer" index="0"]
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_right = 1024.0
 margin_bottom = 228.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
@@ -39,7 +85,7 @@ size_flags_vertical = 3
 alignment = 0
 _sections_unfolded = [ "Size Flags" ]
 
-[node name="PluginToolbar" type="HBoxContainer" parent="VBoxContainer" index="0"]
+[node name="PluginToolbar" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/VBoxContainer" index="0"]
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
@@ -54,12 +100,12 @@ size_flags_horizontal = 1
 size_flags_vertical = 1
 alignment = 0
 
-[node name="AddPluginButton" type="ToolButton" parent="VBoxContainer/PluginToolbar" index="0"]
+[node name="CreatePluginButton" type="Button" parent="VBoxContainer/HBoxContainer/VBoxContainer/PluginToolbar" index="0"]
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_right = 28.0
+margin_right = 53.0
 margin_bottom = 24.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
@@ -72,11 +118,119 @@ toggle_mode = false
 enabled_focus_mode = 2
 shortcut = null
 group = null
+text = "Create"
+flat = false
+align = 1
+
+[node name="AddPluginButton" type="Button" parent="VBoxContainer/HBoxContainer/VBoxContainer/PluginToolbar" index="1"]
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 57.0
+margin_right = 94.0
+margin_bottom = 24.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+focus_mode = 2
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+toggle_mode = false
+enabled_focus_mode = 2
+shortcut = null
+group = null
+text = "Add"
+flat = false
+align = 1
+
+[node name="HidePluginButton" type="Button" parent="VBoxContainer/HBoxContainer/VBoxContainer/PluginToolbar" index="2"]
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 98.0
+margin_right = 140.0
+margin_bottom = 24.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+focus_mode = 2
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+toggle_mode = false
+enabled_focus_mode = 2
+shortcut = null
+group = null
+text = "Hide"
+flat = false
+align = 1
+
+[node name="RemovePluginButton2" type="Button" parent="VBoxContainer/HBoxContainer/VBoxContainer/PluginToolbar" index="3"]
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 144.0
+margin_right = 199.0
+margin_bottom = 24.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+focus_mode = 2
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+toggle_mode = false
+enabled_focus_mode = 2
+shortcut = null
+group = null
+text = "Delete"
+flat = false
+align = 1
+
+[node name="VSeparator" type="VSeparator" parent="VBoxContainer/HBoxContainer/VBoxContainer/PluginToolbar" index="4"]
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 203.0
+margin_right = 207.0
+margin_bottom = 24.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+
+[node name="DisplayPathsButton" type="ToolButton" parent="VBoxContainer/HBoxContainer/VBoxContainer/PluginToolbar" index="5"]
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 211.0
+margin_right = 239.0
+margin_bottom = 24.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+focus_mode = 2
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+toggle_mode = true
+pressed = true
+enabled_focus_mode = 2
+shortcut = null
+group = null
 icon = ExtResource( 2 )
 flat = true
 align = 1
 
-[node name="PluginsTree" type="Tree" parent="VBoxContainer" index="1"]
+[node name="PluginsTree" type="Tree" parent="VBoxContainer/HBoxContainer/VBoxContainer" index="1"]
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
@@ -136,7 +290,35 @@ visible = false
 margin_left = 104.0
 margin_right = 398.0
 
-[connection signal="pressed" from="VBoxContainer/PluginToolbar/AddPluginButton" to="." method="_on_AddPluginButton_pressed"]
+[node name="DeletePluginConfirmationDialog" type="ConfirmationDialog" parent="." index="3"]
+visible = false
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_right = 200.0
+margin_bottom = 70.0
+rect_min_size = Vector2( 200, 70 )
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+popup_exclusive = false
+window_title = "Please Confirm..."
+resizable = false
+dialog_text = "Are you sure you want to delete this plugin directory?"
+dialog_hide_on_ok = true
+_sections_unfolded = [ "Dialog" ]
+
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/VBoxContainer/PluginToolbar/CreatePluginButton" to="." method="_on_CreatePluginButton_pressed"]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/VBoxContainer/PluginToolbar/AddPluginButton" to="." method="_on_AddPluginButton_pressed"]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/VBoxContainer/PluginToolbar/HidePluginButton" to="." method="_on_HidePluginButton_pressed"]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/VBoxContainer/PluginToolbar/RemovePluginButton2" to="." method="_on_DeletePluginButton_pressed"]
+[connection signal="toggled" from="VBoxContainer/HBoxContainer/VBoxContainer/PluginToolbar/DisplayPathsButton" to="." method="_on_DisplayPathsButton_toggled"]
+[connection signal="item_activated" from="VBoxContainer/HBoxContainer/VBoxContainer/PluginsTree" to="." method="_on_PluginsTree_item_activated"]
 [connection signal="dir_selected" from="FileDialog" to="." method="_on_FileDialog_dir_selected"]
 [connection signal="confirmed" from="AddGDNativePluginDialog" to="." method="_on_AddGDNativePluginDialog_confirmed"]
 [connection signal="request_browse" from="AddGDNativePluginDialog" to="." method="_on_AddGDNativePluginDialog_request_browse"]
+[connection signal="confirmed" from="DeletePluginConfirmationDialog" to="." method="_on_DeletePluginConfirmationDialog_confirmed"]
