@@ -1,1 +1,0 @@
-extends "res://addons/godot-builder/gdnative_plugin_add_dialog.gd"

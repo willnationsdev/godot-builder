@@ -1,0 +1,17 @@
+tool
+extends Reference
+
+static func get_config(p_type = "builder"):
+	var cf = ConfigFile.new()
+	var path = "res://addons/godot-builder/" + p_type + ".cfg"
+	if cf.load(path) != OK:
+		print("Failed to load Godot Builder config file at ", path)
+		return null
+	return cf
+
+static func save_config(p_config, p_type = "builder"):
+	var path = "res://addons/godot-builder/" + p_type + ".cfg"
+	if p_config.save(path) != OK:
+		print("Failed to save Godot Builder config file at ", path)
+		return false
+	return true

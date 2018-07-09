@@ -37,7 +37,9 @@ size_flags_horizontal = 1
 size_flags_vertical = 1
 alignment = 0
 
-[node name="LanguageOption" type="OptionButton" parent="Options" index="0"]
+[node name="LanguageOption" type="OptionButton" parent="Options" index="0" groups=[
+"godot_builder_language_option",
+]]
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
@@ -60,7 +62,7 @@ group = null
 text = "C++"
 flat = false
 align = 0
-items = [ "C++", null, false, -1, null, "C++", null, false, -1, null, "C++", null, false, -1, null, "C++", null, false, -1, null, "C++", null, false, -1, null, "C++", null, false, -1, null, "C++", null, false, -1, null, "C++", null, false, -1, null ]
+items = [ "C++", null, false, -1, null ]
 selected = 0
 _sections_unfolded = [ "Rect" ]
 
@@ -100,11 +102,11 @@ action_mode = 0
 enabled_focus_mode = 2
 shortcut = null
 group = null
-text = "1.1"
+text = "1.0"
 flat = false
 align = 0
 items = [ "1.0", null, false, -1, null, "1.1", null, false, -1, null, "Custom", null, false, -1, null ]
-selected = 1
+selected = 0
 _sections_unfolded = [ "Rect" ]
 
 [node name="PlatformOption" type="OptionButton" parent="Options/DynamicOptions" index="1"]
@@ -272,7 +274,7 @@ anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
 margin_left = 616.0
-margin_right = 1024.0
+margin_right = 1020.0
 margin_bottom = 24.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
@@ -298,6 +300,7 @@ mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 1
 toggle_mode = true
+pressed = true
 enabled_focus_mode = 2
 shortcut = null
 group = null
@@ -336,7 +339,7 @@ anchor_right = 0.0
 anchor_bottom = 0.0
 margin_left = 159.0
 margin_top = 5.0
-margin_right = 408.0
+margin_right = 404.0
 margin_bottom = 19.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
@@ -344,7 +347,7 @@ mouse_filter = 2
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 3
 size_flags_vertical = 4
-text = "None"
+text = "gdn1"
 percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
@@ -371,6 +374,21 @@ resizable = false
 dialog_text = "Are you sure you want to clean your selected GDNative plugins? This will delete the libraries!"
 dialog_hide_on_ok = true
 _sections_unfolded = [ "Dialog" ]
+
+[node name="Configs" type="Control" parent="." index="3"]
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 1024.0
+margin_right = 1024.0
+margin_bottom = 24.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
 
 [connection signal="pressed" from="Options/BindingsButton" to="." method="_on_execute" binds= [ "\"generate_bindings\"" ]]
 [connection signal="pressed" from="Options/BuildButton" to="." method="_on_execute" binds= [ "build" ]]

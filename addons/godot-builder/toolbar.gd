@@ -2,18 +2,11 @@ tool
 extends HBoxContainer
 
 signal request_toggle_gdnative_plugins(p_pressed)
-
-const CONFIG_PATH = "res://addons/godot-builder/builder.cfg"
-const SELECTIONS_PATH = "res://addons/godot-builder/selections.cfg"
-
-const GEN_ICON = preload("res://addons/godot-builder/icons/icon_plug.svg")
-const BUILD_ICON = preload("res://addons/godot-builder/icons/icon_wrench.svg")
-const CLEAN_ICON = preload("res://addons/godot-builder/icons/icon_clear.svg")
+signal language_selected(p_language)
 
 const ADD_NEW_PLUGIN = 9827315
 
-var config = ConfigFile.new()
-var selections = ConfigFile.new()
+const Data = preload("res://addons/godot-builder/data.gd")
 
 onready var language_option = $Options/LanguageOption
 
@@ -24,29 +17,22 @@ onready var target_option = $Options/DynamicOptions/TargetOption
 
 onready var toggle_editor_button = $PluginSettings/GDNativePluginsToggleButton
 
-var undoredo = null
+var undoredo = null setget set_undoredo, get_undoredo
 
 func _ready():
-	if config.load(CONFIG_PATH) != OK:
-		print("Failed to load Godot Builder config file at \"", CONFIG_PATH, "\".")
-		return
-	
+	var config = Data.get_config()
+	var selections = Data.get_config("selections")
 	toggle_editor_button.pressed = config.get_value("editor", "expanded", false)
-	$PluginSettings/Label.text = config.get_value("editor", "selected_project", "None")
+	$PluginSettings/Label.text = config.get_value("editor", "selected_plugin", "None")
 	
 	var languages = config.get_value("builder", "languages", [])
 	if not len(languages):
 		return
 	
+	language_option.clear()
 	for a_lang in languages:
 		language_option.add_item(a_lang)
-	language_option.selected = 0
-	
-	if selections.load(SELECTIONS_PATH) != OK:
-		print("Failed to load Godot Builder selections file at \"", SELECTIONS_PATH, "\".")
-		_serialize_selections(true)
-	
-	language_option.selected = selections.get_value("builder", "language", 0 if language_option.get_item_count() else -1)
+	language_option.selected = selections.get_value("builder", "language", 0)
 	
 	for an_option in $Options/DynamicOptions.get_children():
 		an_option.connect("item_selected", self, "_on_dynamic_option_item_selected")
@@ -54,6 +40,8 @@ func _ready():
 	
 	_update_items()
 	_update_selections()
+	
+	emit_signal("language_selected", _get_option("language"))
 	
 #	var dir = Directory.new()
 #	var version = version_option.get_item_text(version_option.selected)
@@ -73,9 +61,11 @@ func _ready():
 #		found_button.connect("pressed", self, "_find_clicked")
 
 func _language_selected(p_id):
+	var selections = Data.get_config("selections")
 	var lang = language_option.get_item_text(p_id)
 	selections.set_value("builder", "language", lang)
-	selections.save(SELECTIONS_PATH)
+	Data.save_config("selections")
+	emit_signal("language_selected", lang)
 
 func _on_confirmed():
 	print("test")
@@ -118,15 +108,16 @@ func _on_dynamic_option_item_selected(p_id):
 
 func _update_items():
 	var lang = _get_option("language")
-	_reload_option_subitems(lang, version_option, "versions")
-	_reload_option_subitems(lang, platform_option, "platforms")
-	_reload_option_subitems(lang, bits_option, "bits")
-	_reload_option_subitems(lang, target_option, "targets")
+	var config = Data.get_config()
+	_reload_option_subitems(config, lang, version_option, "versions")
+	_reload_option_subitems(config, lang, platform_option, "platforms")
+	_reload_option_subitems(config, lang, bits_option, "bits")
+	_reload_option_subitems(config, lang, target_option, "targets")
 	version_option.add_item("Custom")
 
-func _reload_option_subitems(p_lang, p_option, p_config_key):
+func _reload_option_subitems(p_config, p_lang, p_option, p_config_key):
 	p_option.clear()
-	var data = config.get_value(p_lang, p_config_key, [])
+	var data = p_config.get_value(p_lang, p_config_key, [])
 	var list = []
 	match typeof(data):
 		TYPE_ARRAY:
@@ -136,26 +127,27 @@ func _reload_option_subitems(p_lang, p_option, p_config_key):
 			for a_key in keys:
 				if TYPE_DICTIONARY == typeof(data[a_key]):
 					list.append(a_key)
-			
 		_: return
 	for a_label in list:
 		p_option.add_item(a_label)
 
 func _serialize_selections(p_zero_fill = false):
+	var selections = Data.get_config("selections")
 	for an_opt in $Options/DynamicOptions.get_children():
 		var opt_name = an_opt.get_name().replace("Option", "").to_lower()
 		selections.set_value(_get_option("language"), opt_name, 0 if p_zero_fill else get(opt_name + "_option").selected)
-	selections.save(SELECTIONS_PATH)
+	Data.save_config(selections, "selections")
 
 func _update_selections():
 	var lang = _get_option("language")
-	_update_item_selection(lang, version_option, "version")
-	_update_item_selection(lang, platform_option, "platform")
-	_update_item_selection(lang, bits_option, "bits")
-	_update_item_selection(lang, target_option, "target")
+	var selections = Data.get_config("selections")
+	_update_item_selection(selections, lang, version_option, "version")
+	_update_item_selection(selections, lang, platform_option, "platform")
+	_update_item_selection(selections, lang, bits_option, "bits")
+	_update_item_selection(selections, lang, target_option, "target")
 
-func _update_item_selection(p_lang, p_option, p_config_key):
-	p_option.selected = selections.get_value(p_lang, p_config_key, 0 if p_option.get_item_count() else -1)
+func _update_item_selection(p_config, p_lang, p_option, p_config_key):
+	p_option.selected = p_config.get_value(p_lang, p_config_key, 0 if p_option.get_item_count() else -1)
 
 func _get_option(p_prefix):
 	var opt = get(p_prefix + "_option")
@@ -172,18 +164,16 @@ func _on_CleanButton_pressed():
 	$CleanupConfirmationDialog.popup_centered()
 
 func _on_GDNativePluginsToggleButton_toggled(p_pressed):
-	if config:
-		config.load(CONFIG_PATH)
-		config.set_value("editor", "expanded", p_pressed)
-		config.save(CONFIG_PATH)
-	else:
-		print("CONFIG IS EMPTY")
+	var config = Data.get_config()
+	config.set_value("editor", "expanded", p_pressed)
+	Data.save_config(config)
 	emit_signal("request_toggle_gdnative_plugins", p_pressed)
 
 func _on_PluginsEditor_plugin_selected(p_item):
 	var plugin_name = _get_item_plugin_label_text(p_item)
-	config.set_value("editor", "selected_project", plugin_name)
-	config.save(CONFIG_PATH)
+	var config = Data.get_config()
+	config.set_value("editor", "selected_plugin", plugin_name)
+	Data.save_config(config)
 	$PluginSettings/Label.text = plugin_name
 
 func _get_item_plugin_label_text(p_item):
@@ -200,3 +190,9 @@ func _on_PluginsEditor_plugins_tree_reloaded(p_tree):
 		an_item = an_item.get_next()
 	if not an_item:
 		_on_PluginsEditor_plugin_selected(null)
+
+func set_undoredo(p_value):
+	undoredo = p_value
+
+func get_undoredo():
+	return undoredo
