@@ -7,6 +7,7 @@ signal language_selected(p_language)
 const ADD_NEW_PLUGIN = 9827315
 
 const Data = preload("res://addons/godot-builder/data.gd")
+const Execute = preload("res://addons/godot-builder/execute.gd")
 
 onready var language_option = $Options/LanguageOption
 
@@ -23,7 +24,7 @@ func _ready():
 	var config = Data.get_config()
 	var selections = Data.get_config("selections")
 	toggle_editor_button.pressed = config.get_value("editor", "expanded", false)
-	$PluginSettings/Label.text = config.get_value("editor", "selected_plugin", "None")
+	$PluginSettings/Label.text = selections.get_value("editor", "selected_plugin", "None")
 	
 	var languages = config.get_value("builder", "languages", [])
 	if not len(languages):
@@ -154,11 +155,14 @@ func _get_option(p_prefix):
 	return opt.get_item_text(opt.selected)
 
 func _on_execute(p_command):
-	match p_command:
-		"generate_bindings": pass
-		"clean": pass
-		"build": pass
-		_: pass
+	var params = {}
+	params.op = p_command
+	params.language = _get_option("language")
+	params.version = _get_option("version")
+	params.platform = _get_option("platform")
+	params.bits = _get_option("bits")
+	params.target = _get_option("target")
+	Execute.run(params)
 
 func _on_CleanButton_pressed():
 	$CleanupConfirmationDialog.popup_centered()
@@ -171,9 +175,9 @@ func _on_GDNativePluginsToggleButton_toggled(p_pressed):
 
 func _on_PluginsEditor_plugin_selected(p_item):
 	var plugin_name = _get_item_plugin_label_text(p_item)
-	var config = Data.get_config()
-	config.set_value("editor", "selected_plugin", plugin_name)
-	Data.save_config(config)
+	var sel = Data.get_config("selections")
+	sel.set_value("editor", "selected_plugin", plugin_name)
+	Data.save_config(sel, "selections")
 	$PluginSettings/Label.text = plugin_name
 
 func _get_item_plugin_label_text(p_item):

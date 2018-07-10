@@ -500,9 +500,9 @@ mode = 2
 access = 2
 filters = PoolStringArray(  )
 show_hidden_files = true
-current_dir = "C:/Users/Will_Nations/Documents/GitHub/godot-builder"
+current_dir = "/home/will/src/repos/github/godot-builder"
 current_file = ""
-current_path = "C:/Users/Will_Nations/Documents/GitHub/godot-builder/"
+current_path = "/home/will/src/repos/github/godot-builder/"
 _sections_unfolded = [ "Dialog", "Theme" ]
 
 [node name="AddGDNativePluginDialog" parent="." index="2" instance=ExtResource( 4 )]

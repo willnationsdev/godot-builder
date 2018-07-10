@@ -46,19 +46,19 @@ func _on_AddGDNativePluginDialog_request_browse():
 	file_dialog.popup_centered_ratio(.75)
 
 func _on_AddGDNativePluginDialog_confirmed():
-	var cf = Data.get_config()
-	if not cf:
+	var sel = Data.get_config("selections")
+	if not sel:
 		return
 	var dir = Directory.new()
 	if not dir.dir_exists(add_plugin_dialog.path_edit.text):
 		print("The given plugin directory path doesn't exist! Failed to add plugin to Godot Builder.")
 		return
-	var dict = cf.get_value("editor", "plugins", {})
+	var dict = sel.get_value("editor", "plugins", {})
 	dict[add_plugin_dialog.name_edit.text] = {
 		"path": add_plugin_dialog.path_edit.text
 	}
-	cf.set_value("editor", "plugins", dict)
-	Data.save_config(cf)
+	sel.set_value("editor", "plugins", dict)
+	Data.save_config(sel, "selections")
 	_reload_plugins_tree()
 
 func _on_CreatePluginButton_pressed():
@@ -66,14 +66,14 @@ func _on_CreatePluginButton_pressed():
 	create_plugin_dialog.path_edit.text = ""
 	create_plugin_dialog.popup_centered()
 
-func _on_CreateGDNativePluginDialog_request_browse(action):
+func _on_CreateGDNativePluginDialog_request_browse():
 	file_mode = "create"
 	file_dialog.popup_centered_ratio(.75)
 
 
 func _on_CreateGDNativePluginDialog_confirmed():
-	var cf = Data.get_config()
-	if not cf:
+	var sel = Data.get_config("selections")
+	if not sel:
 		return
 	
 	var option = get_tree().get_nodes_in_group("godot_builder_language_option")[0]
@@ -85,35 +85,42 @@ func _on_CreateGDNativePluginDialog_confirmed():
 	if not dir.dir_exists(source_dir):
 		print("The stored plugin template doesn't exist! Failed to create plugin for Godot Builder.")
 		return
-	if dir.dir_exists(destination_dir):
-		print("The given plugin directory path already exists! Failed to create plugin for Godot Builder.")
+	if not dir.dir_exists(destination_dir):
+		print("The given plugin directory path doesn't exist! Failed to create plugin for Godot Builder.")
 		return
 	
-	var command = ""
-	var params = PoolStringArray()
-	match OS.get_name():
-		"Windows":
-			command = "xcopy"
-			params.append(source_dir)
-			params.append(destination_dir)
-			params.append("/O")
-			params.append("/X")
-			params.append("/E")
-			params.append("/H")
-			params.append("/K")
-		"OSX", "X11":
-			command = "cp"
-			params.append("-r")
-			params.append(source_dir)
-			params.append(destination_dir)
-	OS.execute(command, params, true)
+	var fi = File.new()
+	var fo = File.new()
 	
-	var dict = cf.get_value("editor", "plugins", {})
+	dir.change_dir(source_dir)
+	dir.list_dir_begin(true, true)
+	var file = dir.get_next()
+	
+	while file:
+		print("looking at: ", file)
+		if not fi.open(source_dir.plus_file(file), File.READ) == OK:
+			print("Could not open file to read")
+			print(source_dir.plus_file(file))
+			file = dir.get_next()
+			continue
+		if not fo.open(destination_dir.plus_file(file), File.WRITE) == OK:
+			print("Could not open file to write")
+			print(destination_dir.plus_file(file))
+			file = dir.get_next()
+			continue
+		print("transferring")
+		fo.store_string(fi.get_as_text())
+		fi.close()
+		fo.close()
+		print("closing")
+		file = dir.get_next()
+	
+	var dict = sel.get_value("editor", "plugins", {})
 	dict[create_plugin_dialog.name_edit.text] = {
 		"path": create_plugin_dialog.path_edit.text
 	}
-	cf.set_value("editor", "plugins", dict)
-	Data.save_config(cf)
+	sel.set_value("editor", "plugins", dict)
+	Data.save_config(sel, "selections")
 	_reload_plugins_tree()
 
 func _on_FileDialog_dir_selected(p_dir):
@@ -122,10 +129,10 @@ func _on_FileDialog_dir_selected(p_dir):
 		"create": create_plugin_dialog.path_edit.text = p_dir
 
 func _reload_plugins_tree():
-	var cf = Data.get_config()
-	if not cf:
+	var sel = Data.get_config("selections")
+	if not sel:
 		return
-	var dict = cf.get_value("editor", "plugins", {})
+	var dict = sel.get_value("editor", "plugins", {})
 	
 	plugins_tree.clear()
 	var root = plugins_tree.create_item(null)
@@ -139,16 +146,16 @@ func _reload_plugins_tree():
 	emit_signal("plugins_tree_reloaded", plugins_tree)
 
 func _on_HidePluginButton_pressed():
-	var cf = Data.get_config()
-	if not cf:
+	var sel = Data.get_config("selections")
+	if not sel:
 		return
-	var dict = cf.get_value("editor", "plugins", {})
+	var dict = sel.get_value("editor", "plugins", {})
 	var plugin_name = plugins_tree.get_selected().get_metadata(0).name
 	if not dict.has(plugin_name):
 		return
 	dict.erase(plugin_name)
-	cf.set_value("editor", "plugins", dict)
-	Data.save_config(cf)
+	sel.set_value("editor", "plugins", dict)
+	Data.save_config(sel, "selections")
 	_reload_plugins_tree()
 
 func _on_DeletePluginButton_pressed():
@@ -172,9 +179,20 @@ func _on_DeletePluginConfirmationDialog_confirmed():
 	if not dir.dir_exists(plugin_data.path):
 		print("Failed to find the plugin directory at: ", plugin_data.path)
 		return
-	if dir.remove(plugin_data.path) != OK:
-		print("Failed to remove the plugin directory at: ", plugin_data.path)
-		return
+	
+	var command = ""
+	var args = PoolStringArray()
+	match OS.get_name():
+		"Windows":
+			command = "rd"
+			args.append("/s")
+			args.append("/q")
+			args.append(plugin_data.path)
+		"OSX", "X11":
+			command = "rm"
+			args.append("-rf")
+			args.append(plugin_data.path)
+	OS.execute(command, args, true)
 
 func _on_language_selected(p_language):
 	reload_language_templates(p_language)
@@ -250,11 +268,11 @@ func _on_CreateTemplateClassButton_pressed():
 		if a_child is LineEdit:
 			params[param_name] = a_child.text
 	
-	var cf = Data.get_config()
-	var current_plugin = cf.get_value("editor", "selected_plugin", null)
+	var sel = Data.get_config("selections")
+	var current_plugin = sel.get_value("editor", "selected_plugin", null)
 	if not current_plugin:
 		return
-	var plugins = cf.get_value("editor", "plugins", null)
+	var plugins = sel.get_value("editor", "plugins", null)
 	if not plugins or not plugins.has(current_plugin) or not plugins[current_plugin].has("path"):
 		return
 	var plugin_path = plugins[current_plugin].path
