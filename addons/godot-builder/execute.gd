@@ -14,7 +14,11 @@ static func run(p_params):
 					pass
 				"1.1":
 					match op:
+						"generate_json_api":
+							pass
 						"generate_bindings":
+							pass
+						"build_bindings":
 							pass
 						"build":
 							pass

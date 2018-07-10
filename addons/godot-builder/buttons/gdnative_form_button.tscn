@@ -1,0 +1,95 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://addons/godot-builder/buttons/gdnative_form_button.gd" type="Script" id=1]
+[ext_resource path="res://addons/godot-builder/buttons/gdnative_plugin_add_dialog.tscn" type="PackedScene" id=2]
+
+[node name="GDNativeFormButton" type="Button" index="0"]
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_right = 12.0
+margin_bottom = 20.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+focus_mode = 2
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+toggle_mode = false
+enabled_focus_mode = 2
+shortcut = null
+group = null
+text = "Add"
+flat = false
+align = 1
+script = ExtResource( 1 )
+mode = 0
+
+[node name="PathFileDialog" type="FileDialog" parent="." index="0"]
+visible = false
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_right = 275.0
+margin_bottom = 130.0
+rect_min_size = Vector2( 200, 70 )
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+popup_exclusive = false
+window_title = "Save a File"
+resizable = false
+dialog_hide_on_ok = false
+mode_overrides_title = true
+mode = 4
+access = 0
+filters = PoolStringArray(  )
+show_hidden_files = false
+current_dir = "res://"
+current_file = ""
+current_path = "res://"
+
+[node name="GDNLibFileDialog" type="FileDialog" parent="." index="1"]
+visible = false
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_right = 275.0
+margin_bottom = 130.0
+rect_min_size = Vector2( 200, 70 )
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+popup_exclusive = false
+window_title = "Save a File"
+resizable = false
+dialog_hide_on_ok = false
+mode_overrides_title = true
+mode = 4
+access = 0
+filters = PoolStringArray(  )
+show_hidden_files = false
+current_dir = "res://"
+current_file = ""
+current_path = "res://"
+
+[node name="GDNativePluginDialog" parent="." index="2" instance=ExtResource( 2 )]
+visible = false
+resizable = true
+
+[connection signal="pressed" from="." to="." method="_on_GDNativeFormButton_pressed"]
+[connection signal="dir_selected" from="PathFileDialog" to="." method="_on_PathFileDialog_dir_selected"]
+[connection signal="file_selected" from="GDNLibFileDialog" to="." method="_on_OutputFileDialog_file_selected"]
+[connection signal="confirmed" from="GDNativePluginDialog" to="." method="_on_GDNativePluginDialog_confirmed"]
+[connection signal="request_browse_directory" from="GDNativePluginDialog" to="." method="_on_GDNativePluginDialog_request_browse_directory"]
+[connection signal="request_browse_file" from="GDNativePluginDialog" to="." method="_on_GDNativePluginDialog_request_browse_file"]

@@ -3,12 +3,13 @@ extends HBoxContainer
 
 signal plugins_tree_reloaded(tree)
 signal plugin_selected(plugin_item)
+signal plugin_activated(plugin_item)
 
 const Data = preload("res://addons/godot-builder/data.gd")
 
-onready var add_plugin_dialog = $AddGDNativePluginDialog
-onready var create_plugin_dialog = $CreateGDNativePluginDialog
-onready var file_dialog = $FileDialog
+const GOOD_ICON = preload("res://addons/godot-builder/icons/icon_import_check.svg")
+const BAD_ICON = preload("res://addons/godot-builder/icons/icon_import_fail.svg")
+const PATH_ICON = preload("res://addons/godot-builder/icons/icon_path.svg")
 
 onready var plugins_tree = $VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer/ScrollContainer/PluginsTree
 onready var config_edits = $VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer/ScrollContainer2/PanelContainer/ConfigEdits
@@ -18,7 +19,9 @@ onready var template_create_button = $VBoxContainer/HBoxContainer/VBoxContainer/
 
 var display_paths = true
 var current_template_files = []
+
 var file_mode = ""
+var file_edit_property = ""
 
 var undoredo = null setget set_undoredo, get_undoredo
 var language = ""
@@ -29,104 +32,9 @@ func _ready():
 		return
 	_reload_plugins_tree()
 	visible = cf.get_value("editor", "expanded", false)
-	$VBoxContainer/HBoxContainer/VBoxContainer/PluginToolbar/PluginActions/DisplayPathsButton.pressed = cf.get_value("editor", "display_paths", false)
 	var option = get_tree().get_nodes_in_group("godot_builder_language_option")[0]
 	var lang = option.get_item_text(option.selected)
 	reload_language_templates(lang)
-
-func _on_AddPluginButton_pressed(p_name = "", p_path = ""):
-	if p_name:
-		add_plugin_dialog.name_edit.text = p_name
-	if p_path:
-		add_plugin_dialog.path_edit.text = p_path
-	add_plugin_dialog.popup_centered()
-
-func _on_AddGDNativePluginDialog_request_browse():
-	file_mode = "add"
-	file_dialog.popup_centered_ratio(.75)
-
-func _on_AddGDNativePluginDialog_confirmed():
-	var sel = Data.get_config("selections")
-	if not sel:
-		return
-	var dir = Directory.new()
-	if not dir.dir_exists(add_plugin_dialog.path_edit.text):
-		print("The given plugin directory path doesn't exist! Failed to add plugin to Godot Builder.")
-		return
-	var dict = sel.get_value("editor", "plugins", {})
-	dict[add_plugin_dialog.name_edit.text] = {
-		"path": add_plugin_dialog.path_edit.text
-	}
-	sel.set_value("editor", "plugins", dict)
-	Data.save_config(sel, "selections")
-	_reload_plugins_tree()
-
-func _on_CreatePluginButton_pressed():
-	create_plugin_dialog.name_edit.text = ""
-	create_plugin_dialog.path_edit.text = ""
-	create_plugin_dialog.popup_centered()
-
-func _on_CreateGDNativePluginDialog_request_browse():
-	file_mode = "create"
-	file_dialog.popup_centered_ratio(.75)
-
-
-func _on_CreateGDNativePluginDialog_confirmed():
-	var sel = Data.get_config("selections")
-	if not sel:
-		return
-	
-	var option = get_tree().get_nodes_in_group("godot_builder_language_option")[0]
-	var lang = option.get_item_text(option.selected)
-	var source_dir = "res://addons/godot-builder/templates/" + lang + "/plugin"
-	var destination_dir = create_plugin_dialog.path_edit.text
-	
-	var dir = Directory.new()
-	if not dir.dir_exists(source_dir):
-		print("The stored plugin template doesn't exist! Failed to create plugin for Godot Builder.")
-		return
-	if not dir.dir_exists(destination_dir):
-		print("The given plugin directory path doesn't exist! Failed to create plugin for Godot Builder.")
-		return
-	
-	var fi = File.new()
-	var fo = File.new()
-	
-	dir.change_dir(source_dir)
-	dir.list_dir_begin(true, true)
-	var file = dir.get_next()
-	
-	while file:
-		print("looking at: ", file)
-		if not fi.open(source_dir.plus_file(file), File.READ) == OK:
-			print("Could not open file to read")
-			print(source_dir.plus_file(file))
-			file = dir.get_next()
-			continue
-		if not fo.open(destination_dir.plus_file(file), File.WRITE) == OK:
-			print("Could not open file to write")
-			print(destination_dir.plus_file(file))
-			file = dir.get_next()
-			continue
-		print("transferring")
-		fo.store_string(fi.get_as_text())
-		fi.close()
-		fo.close()
-		print("closing")
-		file = dir.get_next()
-	
-	var dict = sel.get_value("editor", "plugins", {})
-	dict[create_plugin_dialog.name_edit.text] = {
-		"path": create_plugin_dialog.path_edit.text
-	}
-	sel.set_value("editor", "plugins", dict)
-	Data.save_config(sel, "selections")
-	_reload_plugins_tree()
-
-func _on_FileDialog_dir_selected(p_dir):
-	match file_mode:
-		"add": add_plugin_dialog.path_edit.text = p_dir
-		"create": create_plugin_dialog.path_edit.text = p_dir
 
 func _reload_plugins_tree():
 	var sel = Data.get_config("selections")
@@ -137,11 +45,18 @@ func _reload_plugins_tree():
 	plugins_tree.clear()
 	var root = plugins_tree.create_item(null)
 	
+	var f = File.new()
+	
 	for a_name in dict:
 		var plugin = plugins_tree.create_item(root)
 		var text = a_name + (": " + dict[a_name].path if display_paths else "")
-		plugin.set_text(0, text)
-		plugin.set_metadata(0, {"name": a_name, "path": dict[a_name].path})
+		var data = dict[a_name]
+		data.name = a_name
+		data.valid_gdnlib = f.file_exists(data.gdnlib)
+		plugin.set_text(0, a_name + " : " + data.gdnlib)
+		plugin.set_icon(0, GOOD_ICON if data.valid_gdnlib else BAD_ICON)
+		plugin.set_metadata(0, data)
+		plugin.set_tooltip(0, data.path)
 	
 	emit_signal("plugins_tree_reloaded", plugins_tree)
 
@@ -161,16 +76,16 @@ func _on_HidePluginButton_pressed():
 func _on_DeletePluginButton_pressed():
 	$DeletePluginConfirmationDialog.popup_centered()
 
-func _on_DisplayPathsButton_toggled(p_pressed):
-	var cf = Data.get_config()
-	if cf:
-		cf.set_value("editor", "display_paths", p_pressed)
-		Data.save_config(cf)
-	display_paths = p_pressed
-	_reload_plugins_tree()
-
 func _on_PluginsTree_item_activated():
+	emit_signal("plugin_activated", plugins_tree.get_selected())
+
+func _on_PluginsTree_cell_selected():
 	emit_signal("plugin_selected", plugins_tree.get_selected())
+
+func _on_PluginsEditor_plugin_selected(p_plugin_item):
+	for a_child in $VBoxContainer/HBoxContainer/VBoxContainer/PluginToolbar/PluginActions.get_children():
+		if a_child.has_method("set_selected_plugin"):
+			a_child.set_selected_plugin(p_plugin_item)
 
 func _on_DeletePluginConfirmationDialog_confirmed():
 	var plugin_data = plugins_tree.get_selected().get_metadata(0)
@@ -311,4 +226,3 @@ func set_undoredo(p_value):
 
 func get_undoredo():
 	return undoredo
-

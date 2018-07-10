@@ -1,12 +1,14 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://addons/godot-builder/toolbar.gd" type="Script" id=1]
-[ext_resource path="res://addons/godot-builder/icons/icon_plug.svg" type="Texture" id=2]
-[ext_resource path="res://addons/godot-builder/icons/icon_wrench.svg" type="Texture" id=3]
-[ext_resource path="res://addons/godot-builder/icons/icon_clear.svg" type="Texture" id=4]
-[ext_resource path="res://addons/godot-builder/icons/icon_arrow_right.svg" type="Texture" id=5]
+[ext_resource path="res://addons/godot-builder/icons/icon_json.svg" type="Texture" id=2]
+[ext_resource path="res://addons/godot-builder/icons/icon_plug.svg" type="Texture" id=3]
+[ext_resource path="res://addons/godot-builder/icons/icon_plug_wrench.svg" type="Texture" id=4]
+[ext_resource path="res://addons/godot-builder/icons/icon_wrench.svg" type="Texture" id=5]
+[ext_resource path="res://addons/godot-builder/icons/icon_clear.svg" type="Texture" id=6]
+[ext_resource path="res://addons/godot-builder/icons/icon_arrow_right.svg" type="Texture" id=7]
 
-[node name="Toolbar" type="HBoxContainer" index="0"]
+[node name="Toolbar" type="HBoxContainer"]
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
@@ -27,7 +29,7 @@ anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_right = 612.0
+margin_right = 676.0
 margin_bottom = 24.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
@@ -192,7 +194,7 @@ align = 0
 items = [ "debug", null, false, -1, null, "release", null, false, -1, null ]
 selected = 0
 
-[node name="BindingsButton" type="ToolButton" parent="Options" index="2"]
+[node name="JsonButton" type="ToolButton" parent="Options" index="2"]
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
@@ -202,9 +204,9 @@ margin_right = 548.0
 margin_bottom = 24.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
-hint_tooltip = "Generate bindings for the given language's GDNative API version
-and build the bindings library for use in GDNative plugins.
-You should only need to do this once for each language and version."
+hint_tooltip = "Generate the JSON API for the bindings. This ensures that the
+generated bindings match the current scripting API for your engine version.
+You should only need to do this once per engine version."
 focus_mode = 2
 mouse_filter = 0
 mouse_default_cursor_shape = 0
@@ -219,7 +221,7 @@ flat = true
 align = 1
 _sections_unfolded = [ "Hint" ]
 
-[node name="BuildButton" type="ToolButton" parent="Options" index="3"]
+[node name="BindingsButton" type="ToolButton" parent="Options" index="3"]
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
@@ -229,8 +231,8 @@ margin_right = 580.0
 margin_bottom = 24.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
-hint_tooltip = "Build a dynamic library using the GDNative bindings library.
-The dynamic library will automatically save to your project folder."
+hint_tooltip = "Generate bindings for the given language's GDNative API version.
+You should only need to do this once for each language and version."
 focus_mode = 2
 mouse_filter = 0
 mouse_default_cursor_shape = 0
@@ -245,7 +247,7 @@ flat = true
 align = 1
 _sections_unfolded = [ "Hint" ]
 
-[node name="CleanButton" type="ToolButton" parent="Options" index="4"]
+[node name="BuildBindingsButton" type="ToolButton" parent="Options" index="4"]
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
@@ -255,6 +257,8 @@ margin_right = 612.0
 margin_bottom = 24.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
+hint_tooltip = "Build the static bindings library for use in GDNative plugins.
+You should only need to do this once for each language and API version."
 focus_mode = 2
 mouse_filter = 0
 mouse_default_cursor_shape = 0
@@ -267,13 +271,64 @@ group = null
 icon = ExtResource( 4 )
 flat = true
 align = 1
+_sections_unfolded = [ "Hint" ]
+
+[node name="BuildButton" type="ToolButton" parent="Options" index="5"]
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 616.0
+margin_right = 644.0
+margin_bottom = 24.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+hint_tooltip = "Build a dynamic library using the GDNative bindings library.
+The dynamic library will automatically save to your project folder.
+You will need to do this every time you make a change to your scripts."
+focus_mode = 2
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+toggle_mode = false
+enabled_focus_mode = 2
+shortcut = null
+group = null
+icon = ExtResource( 5 )
+flat = true
+align = 1
+_sections_unfolded = [ "Hint" ]
+
+[node name="CleanButton" type="ToolButton" parent="Options" index="6"]
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 648.0
+margin_right = 676.0
+margin_bottom = 24.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+focus_mode = 2
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+toggle_mode = false
+enabled_focus_mode = 2
+shortcut = null
+group = null
+icon = ExtResource( 6 )
+flat = true
+align = 1
 
 [node name="PluginSettings" type="HBoxContainer" parent="." index="1"]
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_left = 616.0
+margin_left = 680.0
 margin_right = 1020.0
 margin_bottom = 24.0
 rect_pivot_offset = Vector2( 0, 0 )
@@ -328,7 +383,7 @@ toggle_mode = false
 enabled_focus_mode = 2
 shortcut = null
 group = null
-icon = ExtResource( 5 )
+icon = ExtResource( 7 )
 flat = true
 align = 1
 
@@ -339,7 +394,7 @@ anchor_right = 0.0
 anchor_bottom = 0.0
 margin_left = 159.0
 margin_top = 5.0
-margin_right = 404.0
+margin_right = 340.0
 margin_bottom = 19.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
@@ -371,7 +426,7 @@ size_flags_vertical = 1
 popup_exclusive = false
 window_title = "Cleanup Confirmation"
 resizable = false
-dialog_text = "Are you sure you want to clean your selected GDNative plugins? This will delete the libraries!"
+dialog_text = "Are you sure you want to clean your selected GDNative plugin? This will delete the library!"
 dialog_hide_on_ok = true
 _sections_unfolded = [ "Dialog" ]
 
@@ -390,7 +445,9 @@ mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 1
 
+[connection signal="pressed" from="Options/JsonButton" to="." method="_on_execute" binds= [ "\"generate_json_api\"" ]]
 [connection signal="pressed" from="Options/BindingsButton" to="." method="_on_execute" binds= [ "\"generate_bindings\"" ]]
+[connection signal="pressed" from="Options/BuildBindingsButton" to="." method="_on_execute" binds= [ "\"build_bindings\"" ]]
 [connection signal="pressed" from="Options/BuildButton" to="." method="_on_execute" binds= [ "build" ]]
 [connection signal="pressed" from="Options/CleanButton" to="." method="_on_CleanButton_pressed"]
 [connection signal="toggled" from="PluginSettings/GDNativePluginsToggleButton" to="." method="_on_GDNativePluginsToggleButton_toggled"]
