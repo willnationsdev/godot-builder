@@ -168,6 +168,10 @@ func reload_language_templates(p_language):
 		var line_edit = LineEdit.new()
 		line_edit.rect_min_size.x = 280
 		grid.add_child(line_edit)
+	
+	var last_child = grid.get_child(grid.get_child_count() - 1)
+	last_child.focus_next = last_child.get_path_to(template_create_button)
+	template_create_button.focus_previous = template_create_button.get_path_to(last_child)
 
 func _on_CreateTemplateClassButton_pressed():
 	# acquire the path of the new file to copy to

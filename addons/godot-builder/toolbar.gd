@@ -17,6 +17,7 @@ onready var bits_option = $Options/DynamicOptions/BitsOption
 onready var target_option = $Options/DynamicOptions/TargetOption
 
 onready var toggle_editor_button = $PluginSettings/GDNativePluginsToggleButton
+onready var selected_plugin_label = $PluginSettings/Label
 
 var undoredo = null setget set_undoredo, get_undoredo
 
@@ -165,11 +166,16 @@ func _on_execute(p_command):
 
 	var config = Data.get_config()
 	var platforms = config.get_value(params.language, "platforms", {})
-	if platforms.has(params.platform) and platforms[params.platform].has("nickname"):
-		params.platform = platforms[params.platform].nickname
+	if platforms.has(params.platform): 
+		params.platform_nickname = platforms[params.platform].nickname if platforms[params.platform].has("nickname") else params.platform
 	
-	params.plugin_path
-	params.gdnlib_path
+	var plugin_data = _get_selected_plugin_data()
+	if not plugin_data:
+		print("Failed to acquire plugin data from config during execute prep. Terminating execute operation early.")
+		return
+	
+	params.plugin_path = plugin_data.path
+	params.gdnlib_path = plugin_data.gdnlib
 
 	Execute.run(params)
 
@@ -209,3 +215,9 @@ func set_undoredo(p_value):
 
 func get_undoredo():
 	return undoredo
+
+func _get_selected_plugin_data():
+	var sel = Data.get_config("selections")
+	var selected_plugin = selected_plugin_label.text
+	var data = sel.get_value("editor", "plugins", {})
+	return data[selected_plugin] if data.has(selected_plugin) else {}

@@ -1,9 +1,8 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://addons/godot-builder/plugins_editor.gd" type="Script" id=1]
 [ext_resource path="res://addons/godot-builder/buttons/gdnative_form_button.tscn" type="PackedScene" id=2]
 [ext_resource path="res://addons/godot-builder/icons/icon_blueprint.svg" type="Texture" id=3]
-[ext_resource path="res://addons/godot-builder/buttons/gdnative_plugin_add_dialog.tscn" type="PackedScene" id=4]
 
 [node name="PluginsEditor" type="HBoxContainer" index="0"]
 anchor_left = 0.0
@@ -273,6 +272,7 @@ margin_right = 352.0
 margin_bottom = 20.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
+focus_previous = NodePath("../../../HBoxContainer/ScrollContainer2/PanelContainer/ConfigEdits/Grid/LineEdit5")
 focus_mode = 2
 mouse_filter = 0
 mouse_default_cursor_shape = 0
@@ -417,80 +417,9 @@ mouse_default_cursor_shape = 0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 alignment = 0
-_sections_unfolded = [ "Size Flags" ]
+_sections_unfolded = [ "Focus", "Size Flags" ]
 
-[node name="PathFileDialog" type="FileDialog" parent="." index="1"]
-visible = false
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
-margin_right = 275.0
-margin_bottom = 130.0
-rect_min_size = Vector2( 200, 70 )
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
-mouse_filter = 0
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 1
-size_flags_vertical = 1
-popup_exclusive = false
-window_title = "Open a Directory"
-resizable = true
-dialog_text = "Select a directory containing an init.cpp file."
-dialog_hide_on_ok = true
-mode_overrides_title = true
-mode = 2
-access = 2
-filters = PoolStringArray(  )
-show_hidden_files = true
-current_dir = "C:/Users/Will_Nations/Documents/GitHub/godot-builder"
-current_file = ""
-current_path = "C:/Users/Will_Nations/Documents/GitHub/godot-builder/"
-_sections_unfolded = [ "Dialog", "Theme" ]
-
-[node name="OutputFileDialog" type="FileDialog" parent="." index="2"]
-visible = false
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
-margin_right = 275.0
-margin_bottom = 130.0
-rect_min_size = Vector2( 200, 70 )
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
-mouse_filter = 0
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 1
-size_flags_vertical = 1
-popup_exclusive = false
-window_title = "Open a File"
-resizable = true
-dialog_text = "Select a GDNativeLibrary to create beside and to which to attach your built dynamic libraries."
-dialog_hide_on_ok = true
-mode_overrides_title = true
-mode = 0
-access = 0
-filters = PoolStringArray( "" )
-show_hidden_files = false
-current_dir = "res://"
-current_file = ""
-current_path = "res://"
-_sections_unfolded = [ "Dialog", "Theme", "filters" ]
-
-[node name="AddGDNativePluginDialog" parent="." index="3" instance=ExtResource( 4 )]
-visible = false
-margin_left = 104.0
-margin_right = 398.0
-
-[node name="CreateGDNativePluginDialog" parent="." index="4" instance=ExtResource( 4 )]
-visible = false
-margin_left = 104.0
-margin_right = 398.0
-window_title = "Create a GDNative Plugin"
-
-[node name="DeletePluginConfirmationDialog" type="ConfirmationDialog" parent="." index="5"]
+[node name="DeletePluginConfirmationDialog" type="ConfirmationDialog" parent="." index="1"]
 visible = false
 anchor_left = 0.0
 anchor_top = 0.0
@@ -512,7 +441,6 @@ dialog_text = "Are you sure you want to delete this plugin directory?"
 dialog_hide_on_ok = true
 _sections_unfolded = [ "Dialog" ]
 
-[connection signal="plugin_selected" from="." to="." method="_on_PluginsEditor_plugin_selected"]
 [connection signal="request_refresh_plugins" from="VBoxContainer/HBoxContainer/VBoxContainer/PluginToolbar/PluginActions/CreatePluginButton" to="." method="_reload_plugins_tree"]
 [connection signal="request_refresh_plugins" from="VBoxContainer/HBoxContainer/VBoxContainer/PluginToolbar/PluginActions/AddPluginButton" to="." method="_reload_plugins_tree"]
 [connection signal="request_refresh_plugins" from="VBoxContainer/HBoxContainer/VBoxContainer/PluginToolbar/PluginActions/EditPluginButton" to="." method="_reload_plugins_tree"]
@@ -521,8 +449,4 @@ _sections_unfolded = [ "Dialog" ]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/VBoxContainer/PluginToolbar/TemplateActions/CreateTemplateClassButton" to="." method="_on_CreateTemplateClassButton_pressed"]
 [connection signal="cell_selected" from="VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer/ScrollContainer/PluginsTree" to="." method="_on_PluginsTree_cell_selected"]
 [connection signal="item_activated" from="VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer/ScrollContainer/PluginsTree" to="." method="_on_PluginsTree_item_activated"]
-[connection signal="dir_selected" from="PathFileDialog" to="." method="_on_PathFileDialog_dir_selected"]
-[connection signal="file_selected" from="OutputFileDialog" to="." method="_on_OutputFileDialog_file_selected"]
-[connection signal="confirmed" from="AddGDNativePluginDialog" to="." method="_on_AddGDNativePluginDialog_confirmed"]
-[connection signal="confirmed" from="CreateGDNativePluginDialog" to="." method="_on_CreateGDNativePluginDialog_confirmed"]
 [connection signal="confirmed" from="DeletePluginConfirmationDialog" to="." method="_on_DeletePluginConfirmationDialog_confirmed"]

@@ -8,7 +8,7 @@
 [ext_resource path="res://addons/godot-builder/icons/icon_clear.svg" type="Texture" id=6]
 [ext_resource path="res://addons/godot-builder/icons/icon_arrow_right.svg" type="Texture" id=7]
 
-[node name="Toolbar" type="HBoxContainer"]
+[node name="Toolbar" type="HBoxContainer" index="0"]
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
@@ -132,11 +132,11 @@ action_mode = 0
 enabled_focus_mode = 2
 shortcut = null
 group = null
-text = "Windows"
+text = "X11"
 flat = false
 align = 0
 items = [ "OSX", null, false, -1, null, "Windows", null, false, -1, null, "X11", null, false, -1, null ]
-selected = 1
+selected = 2
 _sections_unfolded = [ "Rect" ]
 
 [node name="BitsOption" type="OptionButton" parent="Options/DynamicOptions" index="2"]
@@ -445,9 +445,9 @@ mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 1
 
-[connection signal="pressed" from="Options/JsonButton" to="." method="_on_execute" binds= [ "\"generate_json_api\"" ]]
-[connection signal="pressed" from="Options/BindingsButton" to="." method="_on_execute" binds= [ "\"generate_bindings\"" ]]
-[connection signal="pressed" from="Options/BuildBindingsButton" to="." method="_on_execute" binds= [ "\"build_bindings\"" ]]
+[connection signal="pressed" from="Options/JsonButton" to="." method="_on_execute" binds= [ "generate_json_api" ]]
+[connection signal="pressed" from="Options/BindingsButton" to="." method="_on_execute" binds= [ "generate_bindings" ]]
+[connection signal="pressed" from="Options/BuildBindingsButton" to="." method="_on_execute" binds= [ "build_bindings" ]]
 [connection signal="pressed" from="Options/BuildButton" to="." method="_on_execute" binds= [ "build" ]]
 [connection signal="pressed" from="Options/CleanButton" to="." method="_on_CleanButton_pressed"]
 [connection signal="toggled" from="PluginSettings/GDNativePluginsToggleButton" to="." method="_on_GDNativePluginsToggleButton_toggled"]
