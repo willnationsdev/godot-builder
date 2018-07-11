@@ -162,6 +162,15 @@ func _on_execute(p_command):
 	params.platform = _get_option("platform")
 	params.bits = _get_option("bits")
 	params.target = _get_option("target")
+
+	var config = Data.get_config()
+	var platforms = config.get_value(params.language, "platforms", {})
+	if platforms.has(params.platform) and platforms[params.platform].has("nickname"):
+		params.platform = platforms[params.platform].nickname
+	
+	params.plugin_path
+	params.gdnlib_path
+
 	Execute.run(params)
 
 func _on_CleanButton_pressed():
