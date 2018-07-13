@@ -13,14 +13,39 @@ static func run(p_params):
 	var op = p_params.op
 	var plugin_path = p_params.plugin_path
 	var gdnlib_path = p_params.gdnlib_path
+	#var terminate_process = p_params.terminate_process
 	
-	var language_bindings_dir = str("user://bindings/" + language)#.replace(" ", "_")
+	var language_bindings_dir = "user://bindings/" + language
 
 	var command = ""
 	var args = PoolStringArray()
 
 	match language:
 		"C++":
+
+#			var remote_command = ""
+#			var remote_args = PoolStringArray()
+#			var config = Data.get_config("selections")
+#			var terminals = config.get_value("builder", "terminals", {})
+#			var terminal = terminals[OS.get_name()] if terminals.has(OS.get_name()) else ""
+#			if not terminal:
+#				return
+#			match OS.get_name():
+#				"Windows":
+#					remote_command = "start"
+#					remote_args.append("/d")
+#					remote_args.append(ProjectSettings.globalize_path(language_bindings_dir.plus_file("godot-cpp")))
+#					remote_args.append(terminal)
+#					if terminal == "cmd.exe":
+#						remote_args.append("@cmd")
+#						remote_args.append("/c")
+#					elif terminal == "powershell":
+#						pass
+#				"OSX", "X11":
+#					remote_command = terminal
+#					remote_args.append("-e")
+
+
 			match str(version):
 				"1.0", "1.1":
 					match op:
