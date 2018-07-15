@@ -9,3 +9,4 @@ Icons made or derived from...
 - "Wrench" by [Freepik](https://www.flaticon.com/authors/freepik) under [CC 3.0 BY](http://creativecommons.org/licenses/by/3.0/).
 - "Plug" by [pixel-perfect](https://www.flaticon.com/authors/pixel-perfect) under [CC 3.0 BY](http://creativecommons.org/licenses/by/3.0/).
 - "Smashicons" (Blueprint) by [Smashicons](https://www.flaticon.com/authors/smashicons) under [CC 3.0 BY](http://creativecommons.org/licenses/by/3.0/).
+- "Download" by [eleonor-wang](https://www.flaticon.com/authors/eleonor-wang) under [CC 3.0 BY](http://creativecommons.org/licenses/by/3.0/).
