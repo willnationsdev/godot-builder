@@ -272,6 +272,7 @@ margin_right = 352.0
 margin_bottom = 20.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
+focus_next = NodePath("../../../HBoxContainer/ScrollContainer2/PanelContainer/ConfigEdits/Grid/LineEdit")
 focus_previous = NodePath("../../../HBoxContainer/ScrollContainer2/PanelContainer/ConfigEdits/Grid/LineEdit5")
 focus_mode = 2
 mouse_filter = 0

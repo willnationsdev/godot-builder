@@ -14,7 +14,9 @@ enum Tasks {
 	TASK_CLEAN
 }
 
-# Setup some threads for asynchronous tasks. Assuming we won't ever need more than 3 tasks for a single operation
+# Setup some threads for asynchronous tasks.
+# Assuming we won't ever need more than 3 tasks for a single operation.
+# Can update if that changes.
 var t1 = Thread.new()
 var t2 = Thread.new()
 var t3 = Thread.new()
@@ -53,18 +55,26 @@ func run(p_params):
 	
 	p_params.plugin_path = plugin_data.path
 	p_params.gdnlib_path = plugin_data.gdnlib
-	p_params.output_dynamic_lib = p_params.gdnlib_path.get_base_dir().plus_file("lib%s.%s.%s.%s" % [selected_plugin, platform, bits, p_params.dynamic_suffix])
 	
-	# Setup assist variables...
+	# Won't use this whole thing for scons C++, but if other languages want it, it'll be available.
+	# If you have a GDNative plugin at res://libs/test/test.gdnlib for Windows 64bit, then this will make:
+	# res://libs/test/libtest.windows.64.dll
+	p_params.output_dynamic_lib = p_params.gdnlib_path.get_base_dir().plus_file("lib%s.%s.%s.%s" % [selected_plugin, platform, bits, p_params.dynamic_suffix])
 	
 	# This is where we expect to find the bindings for the language/version we are working with
 	var language_bindings_dir = OS.get_user_data_dir().plus_file("bindings").plus_file(language).plus_file(version)
-	
 	
 	# These are the parameters we will ultimately be supplying to our OS.execute instructions.
 	# The whole purpose of this plugin is to provide a GUI wrapper around THESE operations.
 	p_params.command = ""
 	p_params.args = PoolStringArray()
+	
+	# Use `where [build command]` on Windows or `which [build command]` on Linux/OSX to find this path
+	# Then set it by clicking the Pth button in the Godot Builder toolbar.
+	var build_command_path = sel.get_value(language, "build_tool_path", "")
+	if not build_command_path:
+		print("Could not find build command. Exiting...")
+		return
 	
 	match language:
 		"C++":
@@ -74,13 +84,6 @@ func run(p_params):
 			p_params.godot_cpp_dir = godot_cpp_dir
 			p_params.godot_headers_dir = godot_headers_dir
 			p_params.bindings_lib = godot_cpp_dir.plus_file("bin").plus_file("lib%s.%s.%s.%s" % [selected_plugin, platform, bits, p_params.static_suffix])
-			
-			# Use `where scons` on Windows or `which scons` on Linux/OSX to find this path
-			# Then set it in your user config file
-			var build_command = sel.get_value("C++", "scons_path", "")
-			if not build_command:
-				print("Could not find build command. Exiting...")
-				return
 			
 			match op:
 				"download":
@@ -117,8 +120,9 @@ func run(p_params):
 				"generate_bindings":
 					p_params.task = TASK_GENERATE_BINDINGS
 					p_params.task_hint = ""
-					p_params.command = build_command
-					p_params.args = PoolStringArray(["-C", godot_cpp_dir, "platform=" + platform_nickname.to_lower(), "headers=../godot_headers", "generate_bindings=yes"])
+					p_params.command_path = build_command_path
+					if _path_to_command(build_command_path) == "scons":
+						p_params.args = PoolStringArray(["-C", godot_cpp_dir, "platform=" + platform_nickname.to_lower(), "headers=../godot_headers", "generate_bindings=yes"])
 					p_params.thread = t1
 					t1.start(self, "task", p_params.duplicate())
 
@@ -126,43 +130,39 @@ func run(p_params):
 					p_params.task = TASK_BUILD
 					p_params.task_hint = ""
 					
-					p_params.command = build_command
-					p_params.args = PoolStringArray()
-					
-#					match platform:
-#						"Windows":
-#							p_params.command = "cmd.exe"
-#							p_params.args.append_array(PoolStringArray(["/C", "cd", godot_cpp_dir, "&&"]))
-#						"X11", "OSX":
-#							p_params.command = "gnome-terminal"
-#							p_params.args.append_array(PoolStringArray(["-x", "sh", "-c"]))
-					p_params.args.append_array(PoolStringArray(["-C", p_params.plugin_path]))
-					p_params.args.append("target=" + target)
-					p_params.args.append("platform=" + platform_nickname)
-					p_params.args.append("bits=" + bits)
-					p_params.args.append("name=" + "lib" + selected_plugin)
-					p_params.args.append("lib=" + p_params.output_dynamic_lib.get_base_dir())
-					p_params.args.append("cpp_bindings_library=" + godot_cpp_dir.plus_file("bin/godot-cpp"))
+					p_params.command_path = build_command_path
+					if _path_to_command(build_command_path) == "scons":
+						p_params.args = PoolStringArray(["-C", p_params.plugin_path])
+						p_params.args.append("target=" + target)
+						p_params.args.append("platform=" + platform_nickname)
+						p_params.args.append("bits=" + bits)
+						p_params.args.append("name=" + "lib" + selected_plugin)
+						p_params.args.append("lib=" + p_params.output_dynamic_lib.get_base_dir())
+						p_params.args.append("cpp_bindings_library=" + godot_cpp_dir.plus_file("bin/godot-cpp"))
 					p_params.thread = t1
 					t1.start(self, "task", p_params.duplicate())
 
 				"clean":
 					p_params.task = TASK_CLEAN
 					p_params.task_hint = ""
-					p_params.command = "scons"
-					p_params.args = PoolStringArray(["-C", p_params.plugin_path, "-c"])
+					p_params.command_path = build_command_path
+					if _path_to_command(build_command_path) == "scons":
+						p_params.args = PoolStringArray(["-C", p_params.plugin_path, "-c"])
 					p_params.thread = t1
 					t1.start(self, "task", p_params.duplicate())
 
-# This is executes in a separate thread so that OS.execute doesn't stall the main thread
+# This executes in a separate thread so that OS.execute doesn't stall the main thread.
 # We could use the false flag, but doing it in a wrapper thread method like this allows
 # us to emit a signal upon completion and let us know when we are done.
 func task(p_params):
-	print("Executing: ", p_params.command, " ", p_params.args.join(" "))
+	print("Executing: ", p_params.command_path, " ", p_params.args.join(" "))
 	var output = []
-	OS.execute(p_params.command, p_params.args, true, output)
+	OS.execute(p_params.command_path, p_params.args, true, output)
 	match p_params.task:
 		TASK_CLEAN:
 			var dir = Directory.new()
 			dir.remove(p_params.output_dynamic_lib)
 	emit_signal("thread_finished", p_params.duplicate())
+
+func _path_to_command(p_command_path):
+	return p_command_path.get_file().get_basename()

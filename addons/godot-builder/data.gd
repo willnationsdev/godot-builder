@@ -1,6 +1,11 @@
 tool
 extends Reference
 
+enum {
+	ERR_BUILDER_NO_BUILD_TOOL = 1,
+	ERR_BUILDER_NO_LIBRARY_SELECTED = 2
+}
+
 static func get_config(p_type = "builder"):
 	var cf = ConfigFile.new()
 	var path = "res://addons/godot-builder/" + p_type + ".cfg"

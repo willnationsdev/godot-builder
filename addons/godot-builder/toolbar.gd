@@ -6,6 +6,9 @@ signal language_selected(p_language)
 
 const Data = preload("res://addons/godot-builder/data.gd")
 
+const GOOD_ICON = preload("res://addons/godot-builder/icons/icon_import_check.svg")
+const BAD_ICON = preload("res://addons/godot-builder/icons/icon_import_fail.svg")
+
 onready var language_option = $Options/LanguageOption
 
 onready var version_option = $Options/DynamicOptions/VersionOption
@@ -18,11 +21,18 @@ onready var selected_plugin_label = $PluginSettings/Label
 
 onready var execute = $Execute
 
+onready var build_tool_file_dialog = $Options/BuildToolPathButton/BuildToolPathFileDialog
+
+onready var status_display = $Options/Status
+
 var undoredo = null setget set_undoredo, get_undoredo
+var build_tool_path = "" setget set_build_tool_path
+var config
+var selections
 
 func _ready():
-	var config = Data.get_config()
-	var selections = Data.get_config("selections")
+	config = Data.get_config()
+	selections = Data.get_config("selections")
 	toggle_editor_button.pressed = config.get_value("editor", "expanded", false)
 	$PluginSettings/Label.text = selections.get_value("editor", "selected_plugin", "None")
 	
@@ -43,6 +53,8 @@ func _ready():
 	_update_selections()
 	
 	emit_signal("language_selected", _get_option("language"))
+	
+	self.build_tool_path = selections.get_value(language_option.get_item_text(language_option.selected), "build_tool_path", "")
 
 func _language_selected(p_id):
 	var selections = Data.get_config("selections")
@@ -50,6 +62,7 @@ func _language_selected(p_id):
 	selections.set_value("builder", "language", lang)
 	Data.save_config("selections")
 	emit_signal("language_selected", lang)
+	self.build_tool_path = selections.get_value(lang, "build_tool_path", "")
 
 func _on_language_option_item_selected(p_id):
 	_update_items()
@@ -135,6 +148,7 @@ func _on_PluginsEditor_plugin_selected(p_item):
 	sel.set_value("editor", "selected_plugin", plugin_name)
 	Data.save_config(sel, "selections")
 	$PluginSettings/Label.text = plugin_name
+	_update_status()
 
 func _get_item_plugin_label_text(p_item):
 	return "None" if not p_item or not p_item.get_metadata(0) or not p_item.get_metadata(0).has("name") else p_item.get_metadata(0).name
@@ -165,3 +179,27 @@ func _get_selected_plugin_data():
 
 func _on_execute_thread_finished(p_params):
 	print("a thread finished!")
+
+func _on_BuildToolPathButton_pressed():
+	if build_tool_path:
+		build_tool_file_dialog.current_dir = build_tool_path.get_base_dir()
+		build_tool_file_dialog.current_path = build_tool_path
+	build_tool_file_dialog.popup_centered_ratio(.75)
+
+func _on_BuildToolPathFileDialog_file_selected(path):
+	selections.set_value(language_option.get_item_text(language_option.selected), "build_tool_path", path)
+	self.build_tool_path = path
+
+func _update_status():
+	if not build_tool_path:
+		status_display.texture = BAD_ICON
+		status_display.hint_tooltip = "No build tool path assigned. Please click the 'Pth' button to assign a build tool."
+	if $PluginSettings/Label.text == "None":
+		status_display.texture = BAD_ICON
+		status_display.hint_tooltip = "No GDNative plugin (with a .gdnlib) selected. Please double-click a created or added GDNative plugin."
+	status_display.texture = GOOD_ICON
+	status_display.hint_tooltip = "There are no build conflicts."
+
+func set_build_tool_path(p_value):
+	build_tool_path = p_value
+	_update_status()
