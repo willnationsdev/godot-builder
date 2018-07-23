@@ -23,8 +23,10 @@ _sections_unfolded = [ "Percent", "Rect" ]
 [node name="BuildToolbar" parent="." index="0" instance=ExtResource( 2 )]
 
 [node name="PluginsEditor" parent="." index="1" instance=ExtResource( 3 )]
-visible = false
+margin_left = 0.0
 margin_top = 28.0
+margin_right = 1024.0
+margin_bottom = 260.0
 
 [connection signal="request_toggle_gdnative_plugins" from="BuildToolbar" to="." method="_on_BuildToolbar_request_toggle_gdnative_plugins"]
 [connection signal="plugin_selected" from="PluginsEditor" to="BuildToolbar" method="_on_PluginsEditor_plugin_selected"]

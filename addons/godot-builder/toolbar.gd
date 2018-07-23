@@ -163,20 +163,7 @@ func _on_execute(p_command):
 	params.platform = _get_option("platform")
 	params.bits = _get_option("bits")
 	params.target = _get_option("target")
-
-	var config = Data.get_config()
-	var platforms = config.get_value(params.language, "platforms", {})
-	if platforms.has(params.platform): 
-		params.platform_nickname = platforms[params.platform].nickname if platforms[params.platform].has("nickname") else params.platform
-	
-	var plugin_data = _get_selected_plugin_data()
-	if not plugin_data:
-		print("Failed to acquire plugin data from config during execute prep. Terminating execute operation early.")
-		return
-	
-	params.plugin_path = plugin_data.path
-	params.gdnlib_path = plugin_data.gdnlib
-
+	params.selected_plugin = selected_plugin_label.text
 	Execute.run(params)
 
 func _on_CleanButton_pressed():

@@ -3,60 +3,90 @@ tool
 const Data = preload("res://addons/godot-builder/data.gd")
 
 static func run(p_params):
-	#print("execute params: ", p_params)
+	# Formally give names to passed in parameters
 	var language = p_params.language
 	var version = p_params.version
 	var platform = p_params.platform
-	var platform_nickname = p_params.platform_nickname
 	var bits = p_params.bits
 	var target = p_params.target
 	var op = p_params.op
-	var plugin_path = p_params.plugin_path
-	var gdnlib_path = p_params.gdnlib_path
+	var selected_plugin = p_params.selected_plugin
 	
+	# Initialize config-dependent standardized inputs
+	var config = Data.get_config()
+	assert(config)
+	var platforms = config.get_value(language, "platforms", {})
+	assert(platforms.has(platform))
+	var platform_nickname = platforms[platform].nickname if platforms[platform].has("nickname") else platform
+	
+	# Initialize config-dependent user-preferred inputs
+	var sel = Data.get_config("selections")
+	assert(sel)
+	
+	var plugin_data = null
+	if true:
+		var data = sel.get_value("editor", "plugins", {})
+		plugin_data = data[selected_plugin] if data.has(selected_plugin) else {}
+		assert(plugin_data)
+	
+	var plugin_path = plugin_data.path
+	var gdnlib_path = plugin_data.gdnlib
+	
+	# Setup assist variables...
+	
+	# This is where we expect to find the bindings for the language/version we are working with
 	var language_bindings_dir = OS.get_user_data_dir().plus_file("bindings").plus_file(language).plus_file(version)
-	var out_file = ProjectSettings.globalize_path("res://__tmp__.txt")
-
+	
+	# These are the parameters we will ultimately be supplying to our OS.execute instructions.
+	# The whole purpose of this plugin is to provide a GUI wrapper around THESE operations.
 	var command = ""
 	var args = PoolStringArray()
-
+	
 	match language:
 		"C++":
+			# This file is a hack that we can generate (touch / create) in our project to trigger a
+			# 'filesystem_changed' callback and let us know when our async command line operations are finished.
+			# Without creating/detecting this file, we have no way of knowing when to move to the next step or
+			# display visual feedback to the user about what step we are on / if we've completed.
+			var out_file = ProjectSettings.globalize_path("res://__tmp__.txt")
+			
+			# These are the intended final locations of our C++ bindings repositories.
 			var godot_cpp_dir = language_bindings_dir.plus_file("godot-cpp")
 			var godot_headers_dir = language_bindings_dir.plus_file("godot_headers")
+			
 			match str(version):
 				"1.0", "1.1":
 					match op:
 						"download":
 							var dir = Directory.new()
 							if not dir.dir_exists(language_bindings_dir):
-								print("Creating bindings directory at: ", "\"" + ProjectSettings.globalize_path(language_bindings_dir) + "\"")
+								print("Creating bindings directory at: ", language_bindings_dir)
 								dir.make_dir_recursive(language_bindings_dir)
 							
 							if not dir.dir_exists(godot_cpp_dir):
-								print("Cloning godot-cpp repository to: ", "\"" + ProjectSettings.globalize_path(godot_cpp_dir) + "\"")
-								command = "cd"
-								args.append_array(PoolStringArray(str(language_bindings_dir + " && git clone https://github.com/GodotNativeTools/godot-cpp.git").split(" ")))
-								match platform:
-									"Windows":
-										pass
-									"OSX", "X11":
-										args.append_array(PoolStringArray(str("&& echo $? > " + out_file).split(" ")))
-								print("Executing: ", command, " ", args.join(" "))
+								print("Cloning godot-cpp repository to: ", godot_cpp_dir)
+								command = "git"
+								args.append_array(str("clone https://github.com/GodotNativeTools/godot-cpp.git " + godot_cpp_dir).split(" "))
+#								match platform:
+#									"Windows":
+#										pass
+#									"OSX", "X11":
+#										args += "&& echo $? > " + out_file + "\""
+								print("Executing: ", command, " ", args)
 								if OS.execute(command, args, false) == -1:
 									print("Operation failed. Exiting...")
 									return
 								args.resize(0)
 							
 							if not dir.dir_exists(godot_headers_dir):
-								print("Cloning godot_headers repository to: ", "\"" + ProjectSettings.globalize_path(godot_headers_dir) + "\"")
-								command = "cd"
-								args.append_array(PoolStringArray(str(language_bindings_dir + " && git clone https://github.com/GodotNativeTools/godot_headers.git").split(" ")))
-								match platform:
-									"Windows":
-										pass
-									"OSX", "X11":
-										args.append_array(PoolStringArray(str("&& echo $? > " + out_file).split(" ")))
+								print("Cloning godot_headers repository to: ", godot_headers_dir)
+								command = "git"
+								args.append_array(str("clone https://github.com/GodotNativeTools/godot_headers.git " + godot_headers_dir).split(" "))
+#								match platform:
+#									"Windows":
+#										pass
+#									"OSX", "X11":
+#										args += "&& echo $? > " + out_file + "\""
 								print("Executing: ", command, " ", args.join(" "))
 								if OS.execute(command, args, false) == -1:
 									print("Operation failed. Exiting...")
@@ -64,24 +94,18 @@ static func run(p_params):
 								args.resize(0)
 
 						"generate_json_api":
-							var sel = Data.get_config("selections")
-							
-							command = sel.get_value("builder", "godot_path")
-							args.append("--gdnative-generate-json-api")
-							args.append("godot_api.json")
-							
+							command = sel.get_value("builder", "godot_path", OS.get_executable_path())
+							args.append_array(str("--gdnative-generate-json-api " + godot_cpp_dir.plus_file("godot_api.json")).split(" "))
 							print("Executing: ", command, " ", args.join(" "))
 							if OS.execute(command, args, false) == -1:
 								print("Operation failed. Exiting...")
 								return
+							args.resize(0)
 
 						"generate_bindings":
 							print("Generating bindings...")
 							command = "scons"
-							args.append(ProjectSettings.globalize_path(godot_cpp_dir))
-							args.append("platform=" + platform_nickname.to_lower())
-							args.append("headers=../godot_headers")
-							args.append("generate_bindings=yes")
+							args.append_array(str(godot_cpp_dir + " platform=" + platform_nickname.to_lower() + " headers=../godot_headers generate_bindings=yes").split(" "))
 							print("Executing: ", command, " ", args.join(" "))
 							if OS.execute(command, args, true) == -1:
 								print("Operation failed. Exiting...")
@@ -104,11 +128,6 @@ static func run(p_params):
 							var static_suffix = platform_data.static
 							var dynamic_suffix = platform_data.dynamic
 							var godot_cpp_bindings_lib = language_bindings_dir.plus_file("godot-cpp/bin/libgodot-cpp.windows.64." + static_suffix)
-							
-							var sel = Data.get_config("selections")
-							var selected_plugin = sel.get_value("editor", "selected_plugin", "")
-							if not selected_plugin:
-								return
 							
 							var output_dynamic_lib = language_bindings_dir.plus_file("godot-cpp/bin/libgodot-cpp.windows.64." + static_suffix)
 						"clean":
