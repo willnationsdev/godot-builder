@@ -66,7 +66,7 @@ static func run(p_params):
 							if not dir.dir_exists(godot_cpp_dir):
 								print("Cloning godot-cpp repository to: ", godot_cpp_dir)
 								command = "git"
-								args.append_array(str("clone https://github.com/GodotNativeTools/godot-cpp.git " + godot_cpp_dir).split(" "))
+								args.append_array(PoolStringArray(["clone", "https://github.com/GodotNativeTools/godot-cpp.git", godot_cpp_dir]))
 #								match platform:
 #									"Windows":
 #										pass
@@ -81,7 +81,7 @@ static func run(p_params):
 							if not dir.dir_exists(godot_headers_dir):
 								print("Cloning godot_headers repository to: ", godot_headers_dir)
 								command = "git"
-								args.append_array(str("clone https://github.com/GodotNativeTools/godot_headers.git " + godot_headers_dir).split(" "))
+								args.append_array(PoolStringArray(["clone", "https://github.com/GodotNativeTools/godot_headers.git", godot_headers_dir]))
 #								match platform:
 #									"Windows":
 #										pass
@@ -95,7 +95,12 @@ static func run(p_params):
 
 						"generate_json_api":
 							command = sel.get_value("builder", "godot_path", OS.get_executable_path())
-							args.append_array(str("--gdnative-generate-json-api " + godot_cpp_dir.plus_file("godot_api.json")).split(" "))
+							args.append_array(PoolStringArray(["--gdnative-generate-json-api", godot_cpp_dir.plus_file("godot_api.json")]))
+							match platform:
+								"Windows":
+									pass
+								"OSX", "X11":
+									args.append_array(PoolStringArray(["&&", "echo", "$?", ">", out_file]))
 							print("Executing: ", command, " ", args.join(" "))
 							if OS.execute(command, args, false) == -1:
 								print("Operation failed. Exiting...")
@@ -105,9 +110,9 @@ static func run(p_params):
 						"generate_bindings":
 							print("Generating bindings...")
 							command = "scons"
-							args.append_array(str(godot_cpp_dir + " platform=" + platform_nickname.to_lower() + " headers=../godot_headers generate_bindings=yes").split(" "))
+							args.append_array(PoolStringArray(["-C", godot_cpp_dir, "platform=" + platform_nickname.to_lower(), "headers=../godot_headers", "generate_bindings=yes"]))
 							print("Executing: ", command, " ", args.join(" "))
-							if OS.execute(command, args, true) == -1:
+							if OS.execute(command, args, false) == -1:
 								print("Operation failed. Exiting...")
 								return
 							args.resize(0)
