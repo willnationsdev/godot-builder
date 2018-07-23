@@ -4,10 +4,7 @@ extends HBoxContainer
 signal request_toggle_gdnative_plugins(p_pressed)
 signal language_selected(p_language)
 
-const ADD_NEW_PLUGIN = 9827315
-
 const Data = preload("res://addons/godot-builder/data.gd")
-const Execute = preload("res://addons/godot-builder/execute.gd")
 
 onready var language_option = $Options/LanguageOption
 
@@ -18,6 +15,8 @@ onready var target_option = $Options/DynamicOptions/TargetOption
 
 onready var toggle_editor_button = $PluginSettings/GDNativePluginsToggleButton
 onready var selected_plugin_label = $PluginSettings/Label
+
+onready var execute = $Execute
 
 var undoredo = null setget set_undoredo, get_undoredo
 
@@ -44,23 +43,6 @@ func _ready():
 	_update_selections()
 	
 	emit_signal("language_selected", _get_option("language"))
-	
-#	var dir = Directory.new()
-#	var version = version_option.get_item_text(version_option.selected)
-#	var lang = lang_dir_map[language_option.get_item_text(language_option.selected)]
-#	var platform = platform_option.get_item_text(platform_option.selected)
-#	var file = "godot-cpp"
-#	var path = "user://bindings".plus_file(version).plus_file(lang).plus_file("bin/godot-cpp.bindings." + _get_library_ext(false))
-#	print("path: ", path)
-#	if dir.file_exists(path):
-#		found_check.pressed = true
-#		found_button.text = "Found"
-#		if found_button.is_connected("pressed", self, "_find_clicked"):
-#			found_button.disconnect("pressed", self, "_find_clicked")
-#	else:
-#		found_check.pressed = false
-#		found_button.text = "Find"
-#		found_button.connect("pressed", self, "_find_clicked")
 
 func _language_selected(p_id):
 	var selections = Data.get_config("selections")
@@ -68,37 +50,6 @@ func _language_selected(p_id):
 	selections.set_value("builder", "language", lang)
 	Data.save_config("selections")
 	emit_signal("language_selected", lang)
-
-func _on_confirmed():
-	print("test")
-	var a = PoolStringArray()
-	#a.append("$PWD")
-	OS.execute("cd", a, true)
-#	var dir = Directory.new()
-#	var dest = "user://bindings/" + _version
-#	if dir.make_dir_recursive(dest) != OK:
-#		print("Failed to create \"", dest, "\" directory. Stopping early.")
-#		return
-#
-#	var args = PoolStringArrray()
-#
-#	args.append("clone")
-#	args.append("https://github.com/GodotNativeTools/godot-cpp")
-#	args.append(dest)
-#	if OS.execute("git", args, true) == -1:
-#		print("Failed to execute [git clone https://GodotNativeTools/godot-cpp\" \"", dest, "\"]. Stopping early.")
-#		return
-#
-#	args.resize(1)
-#	args.append("https://github.com/GodotNativeTools/godot_headers")
-#	if OS.execute("git", args, true) == -1:
-#		print("Failed to execute \"git clone https://GodotNativeTools/godot_headers\". Stopping early.")
-#		return
-#
-#	args.resize(0)
-#	if dir.change_dir("user://bindings/cpp-bindings") != OK:
-#		print("Failed to open cpp-bindings! Stopping early.")
-#		return
 
 func _on_language_option_item_selected(p_id):
 	_update_items()
@@ -155,16 +106,19 @@ func _get_option(p_prefix):
 	var opt = get(p_prefix + "_option")
 	return opt.get_item_text(opt.selected)
 
-func _on_execute(p_command):
+func _on_execute(p_op):
+	if not execute:
+		print("There's no execute node!")
+		return
 	var params = {}
-	params.op = p_command
+	params.op = p_op
 	params.language = _get_option("language")
 	params.version = _get_option("version")
 	params.platform = _get_option("platform")
 	params.bits = _get_option("bits")
 	params.target = _get_option("target")
 	params.selected_plugin = selected_plugin_label.text
-	Execute.run(params)
+	execute.run(params)
 
 func _on_CleanButton_pressed():
 	$CleanupConfirmationDialog.popup_centered()
@@ -208,3 +162,6 @@ func _get_selected_plugin_data():
 	var selected_plugin = selected_plugin_label.text
 	var data = sel.get_value("editor", "plugins", {})
 	return data[selected_plugin] if data.has(selected_plugin) else {}
+
+func _on_execute_thread_finished(p_params):
+	print("a thread finished!")

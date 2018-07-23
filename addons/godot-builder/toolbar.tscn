@@ -4,11 +4,12 @@
 [ext_resource path="res://addons/godot-builder/icons/icon_download.svg" type="Texture" id=2]
 [ext_resource path="res://addons/godot-builder/icons/icon_json.svg" type="Texture" id=3]
 [ext_resource path="res://addons/godot-builder/icons/icon_plug.svg" type="Texture" id=4]
-[ext_resource path="res://addons/godot-builder/icons/icon_plug_wrench.svg" type="Texture" id=5]
-[ext_resource path="res://addons/godot-builder/icons/icon_wrench.svg" type="Texture" id=6]
-[ext_resource path="res://addons/godot-builder/icons/icon_clear.svg" type="Texture" id=7]
-[ext_resource path="res://addons/godot-builder/icons/icon_lang_tools.svg" type="Texture" id=8]
-[ext_resource path="res://addons/godot-builder/icons/icon_arrow_right.svg" type="Texture" id=9]
+[ext_resource path="res://addons/godot-builder/icons/icon_wrench.svg" type="Texture" id=5]
+[ext_resource path="res://addons/godot-builder/icons/icon_clear.svg" type="Texture" id=6]
+[ext_resource path="res://addons/godot-builder/icons/icon_lang_tools.svg" type="Texture" id=7]
+[ext_resource path="res://addons/godot-builder/icons/icon_arrow_right.svg" type="Texture" id=8]
+[ext_resource path="res://addons/godot-builder/execute_utility.gd" type="Script" id=9]
+
 
 [node name="Toolbar" type="HBoxContainer" index="0"]
 anchor_left = 0.0
@@ -31,7 +32,7 @@ anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_right = 740.0
+margin_right = 708.0
 margin_bottom = 24.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
@@ -279,39 +280,13 @@ flat = true
 align = 1
 _sections_unfolded = [ "Hint" ]
 
-[node name="BuildBindingsButton" type="ToolButton" parent="Options" index="5"]
+[node name="BuildButton" type="ToolButton" parent="Options" index="5"]
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
 margin_left = 616.0
 margin_right = 644.0
-margin_bottom = 24.0
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
-hint_tooltip = "Build the static bindings library for use in GDNative plugins.
-You should only need to do this once for each language and API version."
-focus_mode = 2
-mouse_filter = 0
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 1
-size_flags_vertical = 1
-toggle_mode = false
-enabled_focus_mode = 2
-shortcut = null
-group = null
-icon = ExtResource( 5 )
-flat = true
-align = 1
-_sections_unfolded = [ "Hint" ]
-
-[node name="BuildButton" type="ToolButton" parent="Options" index="6"]
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
-margin_left = 648.0
-margin_right = 676.0
 margin_bottom = 24.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
@@ -327,18 +302,18 @@ toggle_mode = false
 enabled_focus_mode = 2
 shortcut = null
 group = null
-icon = ExtResource( 6 )
+icon = ExtResource( 5 )
 flat = true
 align = 1
 _sections_unfolded = [ "Hint" ]
 
-[node name="CleanButton" type="ToolButton" parent="Options" index="7"]
+[node name="CleanButton" type="ToolButton" parent="Options" index="6"]
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_left = 680.0
-margin_right = 708.0
+margin_left = 648.0
+margin_right = 676.0
 margin_bottom = 24.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
@@ -351,17 +326,17 @@ toggle_mode = false
 enabled_focus_mode = 2
 shortcut = null
 group = null
-icon = ExtResource( 7 )
+icon = ExtResource( 6 )
 flat = true
 align = 1
 
-[node name="LangToolsButton" type="ToolButton" parent="Options" index="8"]
+[node name="LangToolsButton" type="ToolButton" parent="Options" index="7"]
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_left = 712.0
-margin_right = 740.0
+margin_left = 680.0
+margin_right = 708.0
 margin_bottom = 24.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
@@ -379,7 +354,7 @@ toggle_mode = true
 enabled_focus_mode = 2
 shortcut = null
 group = null
-icon = ExtResource( 8 )
+icon = ExtResource( 7 )
 flat = true
 align = 1
 _sections_unfolded = [ "Hint" ]
@@ -389,7 +364,7 @@ anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_left = 744.0
+margin_left = 712.0
 margin_right = 1020.0
 margin_bottom = 24.0
 rect_pivot_offset = Vector2( 0, 0 )
@@ -444,7 +419,7 @@ toggle_mode = false
 enabled_focus_mode = 2
 shortcut = null
 group = null
-icon = ExtResource( 9 )
+icon = ExtResource( 8 )
 flat = true
 align = 1
 
@@ -455,7 +430,7 @@ anchor_right = 0.0
 anchor_bottom = 0.0
 margin_left = 159.0
 margin_top = 5.0
-margin_right = 276.0
+margin_right = 308.0
 margin_bottom = 19.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
@@ -506,11 +481,15 @@ mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 1
 
+[node name="Execute" type="Node" parent="." index="4"]
+script = ExtResource( 9 )
+_sections_unfolded = [ "Script" ]
+
 [connection signal="pressed" from="Options/DownloadButton" to="." method="_on_execute" binds= [ "download" ]]
 [connection signal="pressed" from="Options/JsonButton" to="." method="_on_execute" binds= [ "generate_json_api" ]]
 [connection signal="pressed" from="Options/BindingsButton" to="." method="_on_execute" binds= [ "generate_bindings" ]]
-[connection signal="pressed" from="Options/BuildBindingsButton" to="." method="_on_execute" binds= [ "build_bindings" ]]
 [connection signal="pressed" from="Options/BuildButton" to="." method="_on_execute" binds= [ "build" ]]
 [connection signal="pressed" from="Options/CleanButton" to="." method="_on_CleanButton_pressed"]
 [connection signal="toggled" from="PluginSettings/GDNativePluginsToggleButton" to="." method="_on_GDNativePluginsToggleButton_toggled"]
 [connection signal="confirmed" from="CleanupConfirmationDialog" to="." method="_on_execute" binds= [ "clean" ]]
+[connection signal="thread_finished" from="Execute" to="." method="_on_execute_thread_finished"]
