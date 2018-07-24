@@ -191,14 +191,34 @@ func _on_BuildToolPathFileDialog_file_selected(path):
 	self.build_tool_path = path
 
 func _update_status():
+	status_display.texture = BAD_ICON
 	if not build_tool_path:
-		status_display.texture = BAD_ICON
-		status_display.hint_tooltip = "No build tool path assigned. Please click the 'Pth' button to assign a build tool."
-	if $PluginSettings/Label.text == "None":
-		status_display.texture = BAD_ICON
-		status_display.hint_tooltip = "No GDNative plugin (with a .gdnlib) selected. Please double-click a created or added GDNative plugin."
+		status_display.hint_tooltip = tr("No build tool path assigned. Please click the 'Pth' button to assign a build tool.")
+		return
+	var selected_plugin = $PluginSettings/Label.text
+	if selected_plugin == "None":
+		status_display.hint_tooltip = tr("No GDNative plugin (with a .gdnlib) selected. Please double-click a created or added GDNative plugin.")
+		return
+	else:
+		var dir = Directory.new()
+		var data = selections.get_value("editor", "plugins")
+		if not data.has(selected_plugin):
+			status_display.hint_tooltip = tr("The selected plugin's configuration data is missing at editor/plugins/" + selected_plugin + ".")
+			return
+		if not data[selected_plugin].has("gdnlib"):
+			status_display.hint_tooltip = tr("'gdnlib' (path to .gdnlib) missing from selected plugin's configuration.")
+			return
+		if not data[selected_plugin].has("path"):
+			status_display.hint_tooltip = tr("'path' (path to dynamic lib source files) missing from selected plugin's configuration.")
+			return
+		if not dir.file_exists(data[selected_plugin].gdnlib):
+			status_display.hint_tooltip = tr("Could not find configured .gdnlib file for the selected plugin.")
+			return
+		if not dir.dir_exists(data[selected_plugin].path):
+			status_display.hint_tooltip = tr("Could not find configured source files directory for the selected plugin.")
+			return
 	status_display.texture = GOOD_ICON
-	status_display.hint_tooltip = "There are no build conflicts."
+	status_display.hint_tooltip = tr("You're good to go!")
 
 func set_build_tool_path(p_value):
 	build_tool_path = p_value
