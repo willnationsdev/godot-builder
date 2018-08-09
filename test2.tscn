@@ -1,0 +1,16 @@
+[gd_scene load_steps=2 format=2]
+
+[sub_resource type="GDScript" id=1]
+
+script/source = "extends Node
+
+func _ready():
+	var res = GDNativeBuildSettings.new()
+	var list = res.get_property_list()
+	for prop in list:
+		if prop.name == \"libs\" or prop.name == \"include_dirs\" or prop.name == \"source_dirs\" or prop.name.begins_with(\"project_settings\"):
+			print(prop.name, \" | \", prop.type, \" (\", typeof(prop.type), \")\", \" | \", prop.hint, \" (\", typeof(prop.hint), \")\", \" | \", prop.hint_string)"
+
+[node name="Node" type="Node"]
+script = SubResource( 1 )
+

@@ -1,0 +1,22 @@
+[gd_scene load_steps=2 format=2]
+
+[sub_resource type="GDScript" id=1]
+
+script/source = "extends Node
+
+export(Array, String, FILE) var test = [\"res://icon.png\"]
+export(PoolStringArray) var test2 = PoolStringArray([\"res://icon.png\"])
+export(String, FILE) var test3 = \"res://icon.png\"
+
+func _ready():
+	for a_prop in get_property_list():
+		print(a_prop)
+"
+
+[node name="Node" type="Node"]
+script = SubResource( 1 )
+_sections_unfolded = [ "test", "test2" ]
+test = [ "res://icon.png" ]
+test2 = PoolStringArray( "res://icon.png" )
+test3 = "res://icon.png"
+

@@ -21,7 +21,11 @@ var t1 = Thread.new()
 var t2 = Thread.new()
 var t3 = Thread.new()
 
-func run(p_params):
+func run(p_res, p_op):
+	print(p_res)
+	print(p_op)
+	return
+	var p_params = {}
 	# Formally give names to passed in parameters
 	var language = p_params.language
 	var version = p_params.version
