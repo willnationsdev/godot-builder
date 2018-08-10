@@ -1,14 +1,7 @@
 tool
 extends EditorPlugin
 
-const BuildToolbar = preload("res://addons/godot-builder/build_toolbar.tscn")
-
-class EditButton:
-	extends Button
-	func _init():
-		text = "Test"
-	func _pressed():
-		print("test edit button")
+const BuildToolbar = preload("res://addons/godot-builder/build_toolbar.gd")
 
 class GDNativeBuildSettingsPlugin:
 	extends EditorInspectorPlugin
@@ -19,35 +12,28 @@ class GDNativeBuildSettingsPlugin:
 			return true
 	func parse_begin(object):
 		object.execute = execute
-		var node = BuildToolbar.instance()
+		var node = BuildToolbar.new()
 		node.connect_buttons(object)
 		add_custom_control(node)
 	func parse_property(object, type, path, hint, hint_text, usage):
-		if path == "project_settings/bindings_lib_name":
-			add_custom_control(EditButton.new())
+		var paramN = object.template_parameters[object.template_parameter_names[len(object.template_parameter_names)-1]]
+		if path.begins_with("template/"+paramN):
+			var button = Button.new()
+			button.text = "Generate"
+			add_custom_control(button)
 
-const BuilderScn = preload("builder.tscn")
 const Execute = preload("res://addons/godot-builder/execute_utility.gd")
 
-var builder
-var builder_button
 var build_settings_plugin
 var execute
 
 func _enter_tree():
 	execute = Execute.new()
 	add_child(execute)
-	#builder = BuilderScn.instance()
-	#builder.undoredo = get_undo_redo()
-	#builder_button = add_control_to_bottom_panel(builder, "Builder")
-	
+
 	build_settings_plugin = GDNativeBuildSettingsPlugin.new()
 	build_settings_plugin.execute = execute
 	add_inspector_plugin(build_settings_plugin)
 
 func _exit_tree():
-	build_settings_plugin.execute = null
-	remove_inspector_plugin(build_settings_plugin)
 	remove_child(execute)
-	#remove_control_from_bottom_panel(builder)
-	#builder.free()
