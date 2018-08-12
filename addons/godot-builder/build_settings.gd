@@ -6,34 +6,16 @@ class_name GDNativeBuildSettings
 
 ##### CONSTANTS #####
 
-enum Language {
-	CPP
-}
-const LanguageText = {
+# These would otherwise be enums, but strings aren't allowed, so...
+var Language = {
 	CPP: "C++"
 }
-enum Version {
-	ONE,
-	ONE_ONE,
-	CUSTOM
-}
-const VersionText = {
+var Version = {
 	ONE: "1.0",
 	ONE_ONE: "1.1",
 	CUSTOM: "Custom"
 }
-enum Platform {
-	WINDOWS,
-	OSX,
-	X11,
-	ANDROID,
-	IOS,
-	HTML5,
-	HAIKU,
-	SERVER,
-	UWP
-}
-const PlatformText = {
+var Platform = {
 	WINDOWS: "Windows",
 	OSX: "OSX",
 	X11: "Linux",
@@ -44,21 +26,22 @@ const PlatformText = {
 	SERVER: "Server",
 	UWP: "UWP"
 }
-enum Bits {
-	SIXTY_FOUR,
-	THIRTY_TWO
-}
-const BitsText = {
+var Bits = {
 	SIXTY_FOUR: "64",
 	THIRTY_TWO: "32"
 }
-enum Target {
-	DEBUG,
-	RELEASE
-}
-const TargetText = {
+var Target = {
 	DEBUG: "Debug",
 	RELEASE: "Release"
+}
+var TemplateType = {
+	TEMPLATE_TYPE_CLASS: "Class",
+	TEMPLATE_TYPE_LIBRARY: "Library"
+}
+
+const MINIMAL_PARAMS = {
+	"CLASSES": ["FILENAME", "AUTHOR"],
+	"LIBRARIES": ["AUTHOR"],
 }
 
 ##### EXPORTS #####
@@ -79,16 +62,34 @@ var platform = Platform.WINDOWS
 var bits = Bits.SIXTY_FOUR
 var target = Target.DEBUG
 
+# template_
+var template_type = TemplateType.TEMPLATE_TYPE_LIBRARY
+var templates = {
+	"classes": {
+		"names": [],
+		"files": {},
+		"parameter_names": [],
+		"parameters": {},
+	},
+	"libraries": {
+		"names": [],
+		"files": {},
+		"parameter_names": [],
+		"parameters": {},
+	},
+}
+var template_class setget set_template_class
+var template_library setget set_template_library
+
 ##### PROPERTIES #####
 var execute
-var templates = {
-	"classes": {},
-	"projects": {},
-}
-var template_parameters = {}
-var template_parameter_names = []
 
 ##### NOTIFICATIONS #####
+
+func _init():
+	for a_param in MINIMAL_PARAMS.LIBRARIES:
+		templates.libraries.parameter_names.append(a_param)
+		templates.libraries.parameters[a_param] = null
 
 func _get(p_property):
 	match p_property:
@@ -105,9 +106,11 @@ func _get(p_property):
 		"build_options/platform": return platform
 		"build_options/bits": return bits
 		"build_options/target": return target
-	var pretemplate_name = p_property.replace("template/", "")
-	if template_parameters.has(pretemplate_name):
-		return template_parameters[pretemplate_name]
+	var param_name = p_property.replace("template/", "")
+	if templates.classes.parameters.has(param_name):
+		return templates.classes.parameters[param_name]
+	if templates.libraries.parameters.has(param_name):
+		return templates.libraries.parameters[param_name]
 
 func _set(p_property, p_value):
 	match p_property:
@@ -124,11 +127,25 @@ func _set(p_property, p_value):
 		"build_options/platform": platform = p_value
 		"build_options/bits": bits = p_value
 		"build_options/target": target = p_value
-	var pretemplate_name = p_property.replace("template/", "")
-	if template_parameters.has(pretemplate_name):
-		template_parameters[pretemplate_name] = p_value
+	var param_name = p_property.replace("template/", "")
+	if templates.classes.parameters.has(param_name):
+		templates.classes.parameters[param_name] = p_value
+	if templates.libraries.parameters.has(param_name):
+		templates.libraries.parameters[param_name] = p_value
 
 func _get_property_list():
+	var dir = Directory.new()
+	var libs = []
+	if dir.dir_exists("res://libs"):
+		dir.change_dir("res://libs")
+		dir.list_dir_begin(true, true)
+		var filename = dir.get_next()
+		while filename:
+			if filename.get_extension() in ["dll", "dylib", "so"]:
+				libs.append(filename)
+			filename = dir.get_next()
+		dir.list_dir_end()
+	
 	var list = [
 		{
 			"name": "project_settings/project_name",
@@ -197,14 +214,48 @@ func _get_property_list():
 			"hint_string": "Debug,Release"
 		},
 		{
-			"name": "template/name"
-		}
+			"name": "template/type",
+			"type": TYPE_INT,
+			"hint": PROPERTY_HINT_ENUM,
+			"hint_string": "Class,Library"
+		},
 	]
-	for a_template in template_parameter_names:
-		list.append({
-			"name": "template/" + a_template,
-			"type": TYPE_STRING
-		})
+	match template_type:
+		TemplateType.TEMPLATE_TYPE_CLASS:
+			list += [
+				{
+					"name": "template/template",
+					"type": TYPE_INT,
+					"hint": PROPERTY_HINT_ENUM,
+					"hint_string": PoolStringArray(template_names.classes).join(",")
+				},
+				{
+					"name": "template/for_library",
+					"type": TYPE_INT,
+					"hint": PROPERTY_HINT_ENUM,
+					"hint_string": PoolStringArray(libs).join(",")
+				},
+			]
+			for a_name in templates.classes.parameter_names:
+				list.append({
+					"name": "template/" + a_name,
+					"type": TYPE_STRING
+				})
+		TemplateType.TEMPLATE_TYPE_LIBRARY:
+			list += [
+				{
+					"name": "template/template",
+					"type": TYPE_STRING,
+					"hint": PROPERTY_HINT_ENUM,
+					"hint_string": PoolStringArray(template_names.libraries).join(",")
+				}
+			]
+		
+	#for a_template in template_parameter_names:
+	#	list.append({
+	#		"name": "template/" + a_template,
+	#		"type": TYPE_STRING
+	#	})
 	return list
 
 ##### CONNECTIONS #####
@@ -219,26 +270,36 @@ func _on_execute(p_settings, p_op):
 
 func _reload_language_templates():
 	var dir = Directory.new()
-	if not dir.change_dir("res://addons/godot-builder/templates/" + LanguageText[language]) == OK:
+	var templates_path = "res://addons/godot-builder/templates/" + language
+	if not dir.change_dir(templates_path) == OK:
 		return
-	dir.list_dir_begin(true, true)
+
 	templates.classes.clear()
-	templates.projects.clear()
+	templates.libraries.clear()
+
+	dir.list_dir_begin(true, true)
 	var file_name = dir.get_next()
 	while file_name:
 		if dir.file_exists(file_name):
 			var basename = file_name.get_file().get_basename()
-			var filepath = "res://addons/godot-builder/templates/" + LanguageText[language].plus_file(file_name)
-			if templates.has(basename):
-				templates[basename].append(filepath)
+			while basename.get_basename() != basename:
+				basename = basename.get_basename()
+			var filepath = templates_path.plus_file(file_name)
+			if templates.classes.has(basename):
+				templates.classes[basename].append(filepath)
 			else:
-				templates[basename] = [filepath]
-#				template_option.add_item(basename)
-#		file_name = dir.get_next()
-#	var template_name = template_option.get_item_text(template_option.selected)
+				templates.classes[basename] = [filepath]
+		elif dir.dir_exists(file_name):
+			var filepath = templates_path.plus_file(file_name)
+			templates.libraries.files[filepath] = filepath
+		file_name = dir.get_next()
+
+#	var template_class_name = ""
+#	if template_class_idx > 0 and template_class_idx < len(template_names.classes):
+#		template_class_name = templates_names.classes[template_class_idx]
 #	
 #	current_template_files.clear()
-#	current_template_files = templates[template_name]
+#	current_template_files = templates.classes[template_name]
 #	
 #	var template_parameters = {}
 #	var regex = RegEx.new()
@@ -334,21 +395,6 @@ func _reload_language_templates():
 
 ##### PUBLIC METHODS #####
 
-func get_language_text():
-	return LanguageText[language]
-
-func get_version_text():
-	return VersionText[version]
-
-func get_platform_text():
-	return PlatformText[platform]
-
-func get_bits_text():
-	return BitsText[bits]
-
-func get_target_text():
-	return TargetText[target]
-
 ##### SETTERS AND GETTERS #####
 
 func set_language(p_value):
@@ -359,6 +405,37 @@ func set_project_name(p_value):
 	self.bindings_lib_name = "" # hack to trigger reset based on project_name
 
 func set_bindings_lib_name(p_value):
-	var default_dir = OS.get_user_data_dir().plus_file("bindings").plus_file(get_language_text()).plus_file(get_version_text())
+	var default_dir = OS.get_user_data_dir().plus_file("bindings").plus_file(language).plus_file(version)
 	if not p_value:
 		bindings_lib_name = default_dir.plus_file("lib"+project_name)
+
+func set_template_class(p_value):
+	template_class = p_value
+
+	var files = templates.classes.files[template_class]
+	
+	templates.classes.parameters.clear()
+	templates.classes.parameter_names.clear()
+	var regex = RegEx.new()
+	regex.compile("@@([A-Z_]+)")
+	for a_filepath in files:
+		var f = File.new()
+		if f.open(a_filepath, File.READ) != OK:
+			continue
+		var text = f.get_as_text()
+		var result_list = regex.search_all(text)
+		for a_result in result_list:
+			for i in a_result.get_group_count():
+				var name = a_result.get_string(i + 1)
+				if not templates.classes.parameters.has(name):
+					templates.classes.parameter_names.append(name)
+				templates.classes.parameters[name] = null
+		f.close()
+
+	for a_param in MINIMAL_PARAMS.CLASSES:
+		if not templates.classes.parameters.has(a_param):
+			templates.classes.parameter_names.append(a_param)
+			templates.classes.parameters[a_param] = ""
+	
+func set_template_library(p_value):
+	template_library = p_value
