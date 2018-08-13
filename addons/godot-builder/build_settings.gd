@@ -187,37 +187,37 @@ func _get_property_list():
 			"name": "build_options/language",
 			"type": TYPE_INT,
 			"hint": PROPERTY_HINT_ENUM,
-			"hint_string": "C++"
+			"hint_string": PoolStringArray(Language.values()).join(",")
 		},
 		{
 			"name": "build_options/version",
 			"type": TYPE_INT,
 			"hint": PROPERTY_HINT_ENUM,
-			"hint_string": "1.0,1.1,Custom"
+			"hint_string": PoolStringArray(Version.values()).join(",")
 		},
 		{
 			"name": "build_options/platform",
 			"type": TYPE_INT,
 			"hint": PROPERTY_HINT_ENUM,
-			"hint_string": "Windows, OSX, Linux, Android, iOS, HTML5, Haiku, Server, UWP"
+			"hint_string": PoolStringArray(Platform.values()).join(",")
 		},
 		{
 			"name": "build_options/bits",
 			"type": TYPE_INT,
 			"hint": PROPERTY_HINT_ENUM,
-			"hint_string": "64,32"
+			"hint_string": PoolStringArray(Bits.values()).join(",")
 		},
 		{
 			"name": "build_options/target",
 			"type": TYPE_INT,
 			"hint": PROPERTY_HINT_ENUM,
-			"hint_string": "Debug,Release"
+			"hint_string": PoolStringArray(Target.values()).join(",")
 		},
 		{
 			"name": "template/type",
 			"type": TYPE_INT,
 			"hint": PROPERTY_HINT_ENUM,
-			"hint_string": "Class,Library"
+			"hint_string": PoolStringArray(TemplateType.values()).join(",")
 		},
 	]
 	match template_type:
