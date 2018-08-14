@@ -8,52 +8,53 @@ class_name GDNativeBuildSettings
 
 # These would otherwise be enums, but strings aren't allowed, so...
 var Language = {
-	CPP: "C++"
+	"CPP": "C++"
 }
 var Version = {
-	ONE: "1.0",
-	ONE_ONE: "1.1",
-	CUSTOM: "Custom"
+	"ONE": "1.0",
+	"ONE_ONE": "1.1",
+	"CUSTOM": "Custom"
 }
 var Platform = {
-	WINDOWS: "Windows",
-	OSX: "OSX",
-	X11: "Linux",
-	ANDROID: "Android",
-	IOS: "iOS",
-	HTML5: "HTML5",
-	HAIKU: "Haiku",
-	SERVER: "Server",
-	UWP: "UWP"
+	"WINDOWS": "Windows",
+	"OSX": "OSX",
+	"X11": "Linux",
+	"ANDROID": "Android",
+	"IOS": "iOS",
+	"HTML5": "HTML5",
+	"HAIKU": "Haiku",
+	"SERVER": "Server",
+	"UWP": "UWP"
 }
 var Bits = {
-	SIXTY_FOUR: "64",
-	THIRTY_TWO: "32"
+	"SIXTY_FOUR": "64",
+	"THIRTY_TWO": "32"
 }
 var Target = {
-	DEBUG: "Debug",
-	RELEASE: "Release"
+	"DEBUG": "Debug",
+	"RELEASE": "Release"
 }
 var TemplateType = {
-	TEMPLATE_TYPE_CLASS: "Class",
-	TEMPLATE_TYPE_LIBRARY: "Library"
+	"TEMPLATE_TYPE_CLASS": "Class",
+	"TEMPLATE_TYPE_LIBRARY": "Library"
 }
 
 const MINIMAL_PARAMS = {
-	"CLASSES": ["FILENAME", "AUTHOR"],
-	"LIBRARIES": ["AUTHOR"],
+	"CLASS": ["FILENAME", "AUTHOR"],
+	"LIBRARY": ["AUTHOR"],
 }
 
 ##### EXPORTS #####
 
 # project_settings_
-var project_name = "lib"+ProjectSettings.get_setting("application/config/name") setget set_project_name
-var output_dir = ""
+var library_name = "lib"+ProjectSettings.get_setting("application/config/name") setget set_library_name
+var library_root_dir
 var source_dirs = []
 var include_dirs = []
 var libs = []
 var bindings_directory = ""
 var bindings_lib_name = "" setget set_bindings_lib_name
+var output_dir = ""
 
 # build_options_
 var language = Language.CPP setget set_language
@@ -83,23 +84,25 @@ var template_library setget set_template_library
 
 ##### PROPERTIES #####
 var execute
+var inspector_plugin
 
 ##### NOTIFICATIONS #####
 
 func _init():
-	for a_param in MINIMAL_PARAMS.LIBRARIES:
+	for a_param in MINIMAL_PARAMS.LIBRARY:
 		templates.libraries.parameter_names.append(a_param)
 		templates.libraries.parameters[a_param] = null
 
 func _get(p_property):
 	match p_property:
-		"project_settings/name": return project_name
-		"project_settings/output_dir": return output_dir
+		"project_settings/name": return library_name
+		"project_settings/root_dir": return library_root_dir
 		"project_settings/source_dirs": return source_dirs
 		"project_settings/include_dirs": return include_dirs
 		"project_settings/libs": return libs
 		"project_settings/bindings_dir": return bindings_directory
 		"project_settings/bindings_lib_name": return bindings_lib_name
+		"project_settings/output_dir": return output_dir
 		
 		"build_options/language": return language
 		"build_options/version": return version
@@ -114,13 +117,14 @@ func _get(p_property):
 
 func _set(p_property, p_value):
 	match p_property:
-		"project_settings/name": project_name = p_value
-		"project_settings/output_dir": output_dir = p_value
+		"project_settings/name": library_name = p_value
+		"project_settings/root_dir": library_root_dir = p_value
 		"project_settings/source_dirs": source_dirs = p_value
 		"project_settings/include_dirs": include_dirs = p_value
 		"project_settings/libs": libs = p_value
 		"project_settings/bindings_dir": bindings_directory = p_value
 		"project_settings/bindings_lib_name": bindings_lib_name = p_value
+		"project_settings/output_dir": output_dir = p_value
 		
 		"build_options/language": language = p_value
 		"build_options/version": version = p_value
@@ -148,11 +152,11 @@ func _get_property_list():
 	
 	var list = [
 		{
-			"name": "project_settings/project_name",
+			"name": "project_settings/name",
 			"type": TYPE_STRING,
 		},
 		{
-			"name": "project_settings/output_dir",
+			"name": "project_settings/root_dir",
 			"type": TYPE_STRING,
 			"hint": PROPERTY_HINT_GLOBAL_DIR,
 		},
@@ -182,6 +186,11 @@ func _get_property_list():
 		{
 			"name": "project_settings/bindings_lib_name",
 			"type": TYPE_STRING,
+		},
+		{
+			"name": "project_settings/output_dir",
+			"type": TYPE_STRING,
+			"hint": PROPERTY_HINT_GLOBAL_DIR,
 		},
 		{
 			"name": "build_options/language",
@@ -227,7 +236,7 @@ func _get_property_list():
 					"name": "template/template",
 					"type": TYPE_INT,
 					"hint": PROPERTY_HINT_ENUM,
-					"hint_string": PoolStringArray(template_names.classes).join(",")
+					"hint_string": PoolStringArray(templates.classes.names).join(",")
 				},
 				{
 					"name": "template/for_library",
@@ -247,7 +256,7 @@ func _get_property_list():
 					"name": "template/template",
 					"type": TYPE_STRING,
 					"hint": PROPERTY_HINT_ENUM,
-					"hint_string": PoolStringArray(template_names.libraries).join(",")
+					"hint_string": PoolStringArray(templates.libraries.names).join(",")
 				}
 			]
 		
@@ -400,14 +409,14 @@ func _reload_language_templates():
 func set_language(p_value):
 	_reload_language_templates()
 
-func set_project_name(p_value):
-	project_name = p_value
+func set_library_name(p_value):
+	library_name = p_value
 	self.bindings_lib_name = "" # hack to trigger reset based on project_name
 
 func set_bindings_lib_name(p_value):
 	var default_dir = OS.get_user_data_dir().plus_file("bindings").plus_file(language).plus_file(version)
 	if not p_value:
-		bindings_lib_name = default_dir.plus_file("lib"+project_name)
+		bindings_lib_name = default_dir.plus_file("lib"+library_name)
 
 func set_template_class(p_value):
 	template_class = p_value
@@ -432,10 +441,11 @@ func set_template_class(p_value):
 				templates.classes.parameters[name] = null
 		f.close()
 
-	for a_param in MINIMAL_PARAMS.CLASSES:
+	for a_param in MINIMAL_PARAMS.CLASS:
 		if not templates.classes.parameters.has(a_param):
 			templates.classes.parameter_names.append(a_param)
 			templates.classes.parameters[a_param] = ""
 	
 func set_template_library(p_value):
 	template_library = p_value
+

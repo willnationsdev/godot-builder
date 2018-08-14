@@ -7,6 +7,7 @@ const Execute = preload("execute_utility.gd")
 
 var build_settings_plugin
 var execute
+var edited_resource
 
 func _enter_tree():
 	execute = Execute.new()
@@ -18,3 +19,9 @@ func _enter_tree():
 
 func _exit_tree():
 	remove_child(execute)
+
+func edit(object):
+	edited_resource = object
+
+func handles(object):
+	return object is Resource
