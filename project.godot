@@ -9,11 +9,20 @@
 config_version=4
 
 _global_script_classes=[ {
+"base": "Container",
+"class": "FileSystemList",
+"language": "GDScript",
+"path": "res://addons/godot-builder/file_system_list/file_system_list.gd"
+}, {
 "base": "Resource",
 "class": "GDNativeBuildSettings",
 "language": "GDScript",
 "path": "res://addons/godot-builder/build_settings.gd"
 } ]
+_global_script_class_icons={
+"FileSystemList": "",
+"GDNativeBuildSettings": ""
+}
 
 [application]
 

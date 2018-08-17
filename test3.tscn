@@ -1,0 +1,20 @@
+[gd_scene load_steps=2 format=2]
+
+[sub_resource type="GDScript" id=1]
+
+script/source = "tool
+extends Node
+
+export(Array, String, DIR, GLOBAL) var source_dirs = []
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	for a_prop in get_property_list():
+		if a_prop.name == \"source_dirs\":
+			print(a_prop)"
+
+[node name="Node" type="Node"]
+script = SubResource( 1 )
+_sections_unfolded = [ "source_dirs" ]
+source_dirs = [ "" ]
+

@@ -17,13 +17,14 @@ func parse_begin(object):
 	node.connect_buttons(object)
 	add_custom_control(node)
 func parse_property(object, type, path, hint, hint_text, usage):
-	print("'", last_name, "' == '", path, "'?")
-	if last_name != path:
-		return
-	var button = Button.new()
-	button.text = "Generate"
-	button.connect("pressed", self, "_on_generated_pressed", [object])
-	add_custom_control(button)
+	pass
+#	print("'", last_name, "' == '", path, "'?")
+#	if last_name != path:
+#		return
+#	var button = Button.new()
+#	button.text = "Generate"
+#	button.connect("pressed", self, "_on_generated_pressed", [object])
+#	add_custom_control(button)
 
 func _on_generate_pressed(p_res):
 	var gdnLibName = p_res.library_name

@@ -84,7 +84,6 @@ var template_library setget set_template_library
 
 ##### PROPERTIES #####
 var execute
-var inspector_plugin
 
 ##### NOTIFICATIONS #####
 
@@ -97,7 +96,7 @@ func _get(p_property):
 	match p_property:
 		"project_settings/name": return library_name
 		"project_settings/root_dir": return library_root_dir
-		"project_settings/source_dirs": return source_dirs
+		"project_settings/source_dirs_size": return len(source_dirs)
 		"project_settings/include_dirs": return include_dirs
 		"project_settings/libs": return libs
 		"project_settings/bindings_dir": return bindings_directory
@@ -109,11 +108,16 @@ func _get(p_property):
 		"build_options/platform": return platform
 		"build_options/bits": return bits
 		"build_options/target": return target
+	
 	var param_name = p_property.replace("template/", "")
 	if templates.classes.parameters.has(param_name):
 		return templates.classes.parameters[param_name]
 	if templates.libraries.parameters.has(param_name):
 		return templates.libraries.parameters[param_name]
+	
+	var source_dir_idx = p_property.find("project_settings/source_dir_"
+	if source_dir_idx != -1 and source_dir_idx < len(source_dirs):
+		pass
 
 func _set(p_property, p_value):
 	match p_property:
@@ -407,6 +411,7 @@ func _reload_language_templates():
 ##### SETTERS AND GETTERS #####
 
 func set_language(p_value):
+	language = p_value
 	_reload_language_templates()
 
 func set_library_name(p_value):
