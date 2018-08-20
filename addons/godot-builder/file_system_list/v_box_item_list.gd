@@ -2,7 +2,7 @@ tool
 extends VBoxContainer
 class_name VBoxItemList
 
-signal item_inserted(p_index, p_data)
+signal item_inserted(p_index, p_control)
 signal item_removed(p_index, p_data)
 
 const ICON_ADD: Texture = preload("../icons/icon_add.svg")
@@ -69,8 +69,6 @@ func insert_item(p_index: int) -> Control:
 	del_btn.icon = ICON_DELETE
 	hbox.add_child(del_btn)
 	
-	var data := node._get_data() as Dictionary if node.has_method("_get_data") else {}
-	
 	content.add_child(hbox)
 	if p_index >= 0:
 		content.move_child(node, p_index)
@@ -80,9 +78,9 @@ func insert_item(p_index: int) -> Control:
 	_reset_prefix_on_label(item_label, p_index)
 	#warning-ignore:return_value_discarded
 	del_btn.connect("pressed", self, "remove_item", [p_index])
-	_item_inserted(p_index, data)
+	_item_inserted(p_index, node)
 	
-	emit_signal("item_inserted", p_index, data)
+	emit_signal("item_inserted", p_index, node)
 	
 	return node
 
@@ -96,7 +94,7 @@ func append_item():
 
 #warning-ignore:unused_argument
 #warning-ignore:unused_argument
-func _item_inserted(p_index: int, p_data: Dictionary):
+func _item_inserted(p_index: int, p_control: Control):
 	pass
 
 #warning-ignore:unused_argument

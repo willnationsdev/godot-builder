@@ -9,7 +9,7 @@
 config_version=4
 
 _global_script_classes=[ {
-"base": "Container",
+"base": "VBoxContainer",
 "class": "FileSystemList",
 "language": "GDScript",
 "path": "res://addons/godot-builder/file_system_list/file_system_list.gd"
