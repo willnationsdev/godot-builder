@@ -18,10 +18,16 @@ _global_script_classes=[ {
 "class": "GDNativeBuildSettings",
 "language": "GDScript",
 "path": "res://addons/godot-builder/build_settings.gd"
+}, {
+"base": "VBoxContainer",
+"class": "VBoxItemList",
+"language": "GDScript",
+"path": "res://addons/godot-builder/file_system_list/v_box_item_list.gd"
 } ]
 _global_script_class_icons={
 "FileSystemList": "",
-"GDNativeBuildSettings": ""
+"GDNativeBuildSettings": "",
+"VBoxItemList": ""
 }
 
 [application]
