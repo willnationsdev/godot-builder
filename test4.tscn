@@ -8,8 +8,10 @@ class ButtonType:
 	extends Button
 
 func _ready():
-	var item_list = VBoxItemList.new(\"Items\", \"Item\", ButtonType)
-	add_child(item_list)
+	#var item_list = VBoxItemList.new(\"Items\", \"Item\", ButtonType)
+	#add_child(item_list)
+	for i in range(4):
+		print(i)
 "
 
 [node name="VBoxContainer" type="VBoxContainer"]

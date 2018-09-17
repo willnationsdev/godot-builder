@@ -16,5 +16,7 @@ func _ready():
 [node name="Node" type="Node"]
 script = SubResource( 1 )
 _sections_unfolded = [ "source_dirs" ]
-source_dirs = [ "" ]
+source_dirs = [  ]
+
+[node name="Node" type="Node" parent="."]
 
